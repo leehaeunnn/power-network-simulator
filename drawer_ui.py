@@ -37,16 +37,18 @@ class DrawerUI:
             {"text": "수요처", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 2, "width": button_width, "height": button_height, "color": (150, 200, 150), "action": lambda: self.start_add_building("house")},
             {"text": "상가", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 3, "width": button_width, "height": button_height, "color": (200, 150, 100), "action": lambda: self.start_add_building("shop")},
             {"text": "송전선", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 4, "width": button_width, "height": button_height, "color": (100, 100, 200), "action": lambda: self.start_add_line()},
-            {"text": "경유지", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 5, "width": button_width, "height": button_height, "color": (150, 150, 200), "action": lambda: self.start_add_junction()},
+            {"text": "🛤️선 꺾기", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 5, "width": button_width, "height": button_height, "color": (255, 165, 0), "action": lambda: self.start_add_junction()},
             {"text": "복구", "x": col1_x, "y": button_y_start + (button_height + button_spacing) * 6, "width": button_width, "height": button_height, "color": (100, 200, 100), "action": self.restore_all},
             
             # 두 번째 열 - 발전소와 기능
-            {"text": "풍력", "x": col2_x, "y": button_y_start, "width": button_width, "height": button_height, "color": (100, 200, 255), "action": lambda: self.start_add_power_plant("wind", 100)},
-            {"text": "태양광", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 1, "width": button_width, "height": button_height, "color": (255, 200, 50), "action": lambda: self.start_add_power_plant("solar", 100)},
+            {"text": "풍력", "x": col2_x, "y": button_y_start, "width": button_width, "height": button_height, "color": (100, 200, 255), "action": lambda: self.start_add_power_plant("wind", 80)},
+            {"text": "태양광", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 1, "width": button_width, "height": button_height, "color": (255, 200, 50), "action": lambda: self.start_add_power_plant("solar", 60)},
             {"text": "수력", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 2, "width": button_width, "height": button_height, "color": (50, 150, 255), "action": lambda: self.start_add_power_plant("hydro", 100)},
-            {"text": "수소저장", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 3, "width": button_width, "height": button_height, "color": (200, 100, 255), "action": lambda: self.start_add_power_plant("hydrogen", 100)},
-            {"text": "AI업그레이드", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 4, "width": button_width, "height": button_height, "color": (200, 100, 200), "action": self.toggle_ai_upgrade},
-            {"text": "시나리오", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 5, "width": button_width, "height": button_height, "color": (200, 200, 100), "action": self.toggle_scenario_list},
+            {"text": "원자력", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 3, "width": button_width, "height": button_height, "color": (255, 100, 100), "action": lambda: self.start_add_power_plant("nuclear", 200)},
+            {"text": "화력", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 4, "width": button_width, "height": button_height, "color": (120, 80, 60), "action": lambda: self.start_add_power_plant("thermal", 150)},
+            {"text": "수소저장", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 5, "width": button_width, "height": button_height, "color": (200, 100, 255), "action": lambda: self.start_add_power_plant("hydrogen", 100)},
+            {"text": "AI업그레이드", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 6, "width": button_width, "height": button_height, "color": (200, 100, 200), "action": self.toggle_ai_upgrade},
+            {"text": "시나리오", "x": col2_x, "y": button_y_start + (button_height + button_spacing) * 7, "width": button_width, "height": button_height, "color": (200, 200, 100), "action": self.toggle_scenario_list},
         ]
         
         # 선택된 발전소 타입
@@ -89,6 +91,12 @@ class DrawerUI:
         """일반 모드로 전환"""
         self.drawer.add_mode = "none"
         self.drawer.temp_line_start = None
+        # waypoint 편집 상태 초기화
+        self.drawer.waypoint_mode = False
+        self.drawer.editing_line = None
+        self.drawer.temp_waypoints = []
+        self.drawer.dragging_waypoint = False
+        self.drawer.dragging_waypoint_index = -1
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
     
     def start_delete_mode(self):
@@ -110,14 +118,20 @@ class DrawerUI:
     
     def start_add_junction(self):
         """waypoint 편집 모드로 전환"""
-        print("waypoint 편집 모드를 시작하려면:")
-        print("1. 송전선을 우클릭하세요")
-        print("2. 나타나는 메뉴에서 '경유점 편집'을 선택하세요")
-        print("또는 송전선을 먼저 선택한 후 이 버튼을 다시 누르세요")
+        print("=" * 50)
+        print("🛤️ 송전선 꺾기 모드 시작!")
+        print("1️⃣ 먼저 꺾고 싶은 송전선을 클릭하세요")
+        print("2️⃣ 송전선 위의 원하는 지점을 클릭해서 꺾임점 추가")
+        print("3️⃣ Enter 키로 저장, ESC 키로 취소")
+        print("=" * 50)
         
-        # 사용자가 송전선을 선택할 수 있도록 일반 모드로 설정
+        # 송전선 선택 모드로 전환
         self.drawer.add_mode = "select_line_for_waypoint"
-        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+        
+        # 사용 가능한 송전선 개수 출력
+        available_lines = len([l for l in self.simulator.city.lines if not l.removed])
+        print(f"📍 편집 가능한 송전선: {available_lines}개")
     
 
     def start_add_power_plant(self, plant_type, capacity):
@@ -857,7 +871,9 @@ class DrawerUI:
                         self.simulator.update_flow(instant=True)
             elif self.drawer.add_mode == "select_line_for_waypoint":
                 # waypoint 편집할 송전선 선택 모드
+                print(f"[DEBUG] 송전선 선택 시도 중... mx={mx}, my={my}")
                 selected_line = self.pick_line(mx, my)
+                print(f"[DEBUG] pick_line 결과: {selected_line}")
                 if selected_line:
                     # 송전선이 선택되면 waypoint 편집 모드 시작
                     self.drawer.editing_line = selected_line
@@ -874,6 +890,7 @@ class DrawerUI:
                     print("  • ESC: 취소")
                 else:
                     print("송전선을 클릭해주세요")
+                    print(f"[DEBUG] 사용 가능한 송전선: {[(l.u, l.v) for l in self.simulator.city.lines if not l.removed]}")
             elif self.drawer.add_mode.startswith("add_"):
                 if self.drawer.add_mode == "add_line":
                     # 송전선 추가 모드
@@ -996,6 +1013,14 @@ class DrawerUI:
             elif self.selected_power_plant_type == "hydrogen":
                 self.simulator.city.add_hydrogen_storage(
                     storage_capacity=self.selected_power_capacity, x=wx, y=wy
+                )
+            elif self.selected_power_plant_type == "nuclear":
+                self.simulator.city.add_nuclear_plant(
+                    capacity=self.selected_power_capacity, x=wx, y=wy
+                )
+            elif self.selected_power_plant_type == "thermal":
+                self.simulator.city.add_thermal_plant(
+                    capacity=self.selected_power_capacity, x=wx, y=wy
                 )
         elif self.drawer.add_mode == "add_demand":
             sup = -5.0

@@ -222,6 +222,25 @@ class DrawerRenderer:
         
         return smooth_points
     
+    def _point_to_line_distance(self, px, py, x1, y1, x2, y2):
+        """점 (px, py)에서 선분 (x1,y1)-(x2,y2)까지의 최단거리"""
+        # 선분의 길이의 제곱
+        line_length_sq = (x2 - x1) ** 2 + (y2 - y1) ** 2
+        
+        if line_length_sq == 0:
+            # 선분이 점인 경우
+            return ((px - x1) ** 2 + (py - y1) ** 2) ** 0.5
+        
+        # 선분 위의 가장 가까운 점 계산
+        t = max(0, min(1, ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / line_length_sq))
+        
+        # 가장 가까운 점의 좌표
+        closest_x = x1 + t * (x2 - x1)
+        closest_y = y1 + t * (y2 - y1)
+        
+        # 거리 계산
+        return ((px - closest_x) ** 2 + (py - closest_y) ** 2) ** 0.5
+    
     def _draw_smooth_line(self, points, color, width):
         """점들을 부드러운 곡선으로 연결하여 그리기"""
         if len(points) < 2:
@@ -265,6 +284,15 @@ class DrawerRenderer:
             g = int(200 * (1 - usage))
             color = (r, g, 0)
             thick = max(3, int(3 + 7 * usage))
+            
+            # waypoint 선택 모드에서 호버 효과
+            if self.drawer.add_mode == "select_line_for_waypoint":
+                mx, my = pygame.mouse.get_pos()
+                # 선에서 마우스까지의 거리 계산
+                line_dist = self._point_to_line_distance(mx, my, sx1, sy1, sx2, sy2)
+                if line_dist < 15:  # 15픽셀 내에 있으면 하이라이트
+                    color = (100, 255, 100)  # 초록색으로 하이라이트
+                    thick = max(thick + 2, 8)  # 더 두껍게
             
             # 파티클 생성
             if abs(pl.flow) > 0.1:  # 의미있는 전력 흐름이 있을 때만
@@ -455,9 +483,32 @@ class DrawerRenderer:
     def _get_building_colors(self, b):
         """건물 상태에 따른 색상 결정"""
         if b.base_supply > 0:
-            # 발전소
-            col = (100, 150, 255)
-            border_col = (100, 200, 255)
+            # 발전소 - 타입별 색상
+            if hasattr(b, 'power_plant_type') and b.power_plant_type:
+                if b.power_plant_type == "nuclear":
+                    col = (255, 150, 150)  # 빨간색 계열 (원자력)
+                    border_col = (255, 100, 100)
+                elif b.power_plant_type == "thermal":
+                    col = (150, 120, 100)  # 갈색 계열 (화력)
+                    border_col = (120, 80, 60)
+                elif b.power_plant_type == "wind":
+                    col = (150, 200, 255)  # 하늘색 계열 (풍력)
+                    border_col = (100, 150, 255)
+                elif b.power_plant_type == "solar":
+                    col = (255, 220, 100)  # 노란색 계열 (태양광)
+                    border_col = (255, 200, 50)
+                elif b.power_plant_type == "hydro":
+                    col = (100, 150, 255)  # 파란색 계열 (수력)
+                    border_col = (50, 100, 200)
+                elif b.power_plant_type == "hydrogen":
+                    col = (200, 150, 255)  # 보라색 계열 (수소)
+                    border_col = (150, 100, 255)
+                else:
+                    col = (100, 150, 255)  # 기본 발전소
+                    border_col = (100, 200, 255)
+            else:
+                col = (100, 150, 255)  # 기본 발전소
+                border_col = (100, 200, 255)
         elif b.base_supply < 0:
             # 수요 건물
             if b.blackout: # b.blackout은 현재 수요 기준으로 check_blackouts에서 이미 계산됨
@@ -633,8 +684,68 @@ class DrawerRenderer:
                     if len(points) > 2:
                         pygame.draw.lines(self.screen, (100, 200, 255), False, points[1:], 3)
                         
+        elif b.power_plant_type == "nuclear":
+            # 원자력발전소 - 원자력 기호와 냉각탑
+            pygame.draw.circle(self.screen, col, (sx, sy), r)
+            pygame.draw.circle(self.screen, border_col, (sx, sy), r, 3)
+            
+            # 원자력 기호 (삼원환)
+            center_r = r * 0.3
+            for i in range(3):
+                angle = i * 120
+                rad = math.radians(angle)
+                circle_x = sx + math.cos(rad) * center_r
+                circle_y = sy + math.sin(rad) * center_r
+                pygame.draw.circle(self.screen, (255, 255, 100), 
+                                 (int(circle_x), int(circle_y)), int(r * 0.15))
+                pygame.draw.circle(self.screen, (200, 200, 0), 
+                                 (int(circle_x), int(circle_y)), int(r * 0.15), 2)
+            
+            # 중심점
+            pygame.draw.circle(self.screen, (255, 100, 100), (sx, sy), int(r * 0.1))
+            
+            # 냉각탑 증기 효과 (발전 중일 때)
+            if b.current_supply > 0:
+                for i in range(4):
+                    steam_x = sx - r * 0.4 + i * r * 0.2
+                    steam_y = sy - r * 1.2
+                    steam_size = 3 + (self.drawer.frame_count + i * 10) % 20
+                    pygame.draw.circle(self.screen, (220, 220, 255, 100), 
+                                     (int(steam_x), int(steam_y)), steam_size)
+        
+        elif b.power_plant_type == "thermal":
+            # 화력발전소 - 굴뚝과 연기
+            pygame.draw.circle(self.screen, col, (sx, sy), r)
+            pygame.draw.circle(self.screen, border_col, (sx, sy), r, 3)
+            
+            # 굴뚝들
+            chimney_width = r * 0.2
+            for i in range(2):
+                chimney_x = sx - r * 0.3 + i * r * 0.6
+                chimney_rect = pygame.Rect(chimney_x - chimney_width//2, sy - r * 1.5, 
+                                         chimney_width, r * 1.0)
+                pygame.draw.rect(self.screen, (80, 80, 80), chimney_rect)
+                pygame.draw.rect(self.screen, (60, 60, 60), chimney_rect, 2)
+            
+            # 연기 효과 (발전 중일 때)
+            if b.current_supply > 0:
+                for i in range(2):
+                    for j in range(3):
+                        smoke_x = sx - r * 0.3 + i * r * 0.6
+                        smoke_y = sy - r * 1.5 - j * 10
+                        smoke_offset = (self.drawer.frame_count + i * 20 + j * 5) % 40
+                        smoke_size = 5 + smoke_offset // 10
+                        smoke_alpha = 150 - j * 30
+                        pygame.draw.circle(self.screen, (100, 100, 100, max(0, smoke_alpha)), 
+                                         (int(smoke_x + smoke_offset * 0.2), int(smoke_y)), smoke_size)
+            
+            # 석탄 더미 표현
+            coal_rect = pygame.Rect(sx - r * 0.4, sy + r * 0.2, r * 0.8, r * 0.3)
+            pygame.draw.rect(self.screen, (40, 40, 40), coal_rect)
+            pygame.draw.rect(self.screen, (20, 20, 20), coal_rect, 2)
+                        
         else:
-            # 기본 화력발전소
+            # 기본 발전소
             self._draw_generator_shape(b, sx, sy, r, col, border_col)
     
     def _draw_lightning_shape(self, sx, sy, r, col, border_col):
