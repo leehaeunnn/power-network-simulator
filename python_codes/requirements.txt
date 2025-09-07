@@ -1,0 +1,6 @@
+pygame==2.1.2
+flask==2.0.2
+flask-socketio==5.1.1
+matplotlib==3.5.1
+numpy==1.22.2
+openai==0.27.0 

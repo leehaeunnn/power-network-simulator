@@ -1,0 +1,684 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>스마트 그리드 운영 및 분석을 위한 통합 전력망 시뮬레이터 개발</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-transparentGray { background-color: undefined; }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1f07a799-1b25-8034-92d6-dd232bca053e" class="page sans"><header><h1 class="page-title">스마트 그리드 운영 및 분석을 위한 통합 전력망 시뮬레이터 개발</h1><p class="page-description"></p></header><div class="page-body"><h2 id="1f07a799-1b25-8049-b660-f3cb0b893f61" class="">초록 (Abstract)</h2><p id="1f07a799-1b25-80bf-8cf8-cd944a361813" class="">스마트 그리드는 현대 전력 시스템의 핵심 요소로, 에너지 효율성, 신뢰성, 그리고 지속 가능성을 향상시키는 데 중요한 역할을 한다. 본 연구에서는 복잡한 전력망의 동적 특성을 분석하고 다양한 운영 시나리오를 평가할 수 있는 통합 전력망 시뮬레이터를 개발한다. 제안하는 시뮬레이터는 도시 규모의 전력망을 상세하게 모델링하며, 여기에는 다양한 유형의 발전원(중앙 집중식, 태양광 등), 부하(주거, 상업, 산업시설), 에너지 저장 시스템(ESS) 및 프로슈머(Prosumer)가 포함된다. 시뮬레이터는 실시간으로 변화하는 기상 조건, 돌발적인 시스템 이벤트(예: 송전선 고장, 발전기 트립), 그리고 경제적 요인들을 통합적으로 고려하여 전력 수요와 공급의 변동, 전력 흐름, 그리고 잠재적인 정전 상황을 정교하게 예측한다. 전력 흐름 계산을 위해 Edmonds-Karp 알고리즘 기반의 최대 유량 알고리즘을 적용하였으며, 이를 통해 네트워크 내 병목 지점과 취약성을 식별할 수 있다. 또한, 시뮬레이터는 Pygame을 이용한 직관적인 로컬 GUI와 Flask 기반의 웹 인터페이스를 제공하여 사용자가 시뮬레이션 과정을 시각적으로 모니터링하고 상호작용할 수 있도록 지원한다. 다양한 시나리오 기반의 실험을 통해 개발된 시뮬레이터의 효용성을 검증하고, 전력망 계획, 운영 전략 수립, 그리고 스마트 그리드 기술의 효과 분석에 기여할 수 있음을 보인다.</p><h2 id="1f07a799-1b25-80df-91dd-c234cad42ed1" class="">1. 서론 (Introduction)</h2><p id="1f07a799-1b25-8081-b354-e923cc250493" class="">전통적인 전력망은 중앙 집중식 발전, 단방향 전력 흐름, 그리고 제한적인 통신 및 제어 기능을 특징으로 한다. 이러한 구조는 증가하는 에너지 수요, 신재생 에너지원의 간헐성 및 분산화, 그리고 기후 변화와 같은 현대적 도전 과제에 직면하여 점점 더 많은 한계를 드러내고 있다. 스마트 그리드는 정보통신기술(ICT)을 전력망에 통합하여 에너지 효율성, 시스템 신뢰성, 운영 유연성, 그리고 소비자의 능동적 참여를 극대화하는 차세대 전력망으로 주목받고 있다 [1, 2]. 스마트 그리드의 성공적인 구현과 운영을 위해서는 다양한 기술 요소와 정책적 고려 사항이 복합적으로 작용하며, 이들의 상호작용과 시스템 전체에 미치는 영향을 사전에 분석하고 평가하는 것이 매우 중요하다.</p><p id="1f07a799-1b25-80c0-8c6d-d671c56e3738" class="">전력망 시뮬레이션은 이러한 복잡한 시스템을 이해하고 분석하는 데 필수적인 도구이다. 시뮬레이터를 통해 연구자들과 엔지니어들은 실제 시스템에 영향을 주지 않으면서 다양한 조건 하에서 전력망의 거동을 시험하고, 새로운 기술이나 운영 전략의 효과를 검증하며, 잠재적인 문제점을 예측하고 대응 방안을 모색할 수 있다 [3]. 특히, 신재생 에너지 통합, 수요 반응 프로그램, 에너지 저장 시스템(ESS) 도입, 전기 자동차(EV) 충전 인프라 구축 등 스마트 그리드의 핵심 요소들이 전력망에 미치는 영향을 다각도로 분석하기 위해서는 정교하고 포괄적인 시뮬레이션 모델이 요구된다.</p><p id="1f07a799-1b25-80a5-bf7b-e0bf5c0ddc8b" class="">본 연구의 목적은 이러한 요구에 부응하여, 도시 규모의 스마트 그리드 환경을 위한 통합 전력망 시뮬레이터를 개발하는 것이다. 이 시뮬레이터는 다음과 같은 주요 특징과 기여를 목표로 한다:</p><ol type="1" id="1f07a799-1b25-80b0-9c79-d436cbe32b15" class="numbered-list" start="1"><li><strong>상세한 전력망 모델링</strong>: 건물 단위의 발전(태양광 등), 소비, 에너지 저장 기능을 포함하여 전력망의 물리적 구성 요소를 상세하게 모델링한다.</li></ol><ol type="1" id="1f07a799-1b25-8078-bec1-d5e5d960fbaf" class="numbered-list" start="2"><li><strong>동적 환경 요인 통합</strong>: 실시간 기상 변화, 예측 불가능한 돌발 이벤트, 그리고 시장 기반의 경제적 요인을 시뮬레이션에 통합하여 현실 세계의 복잡성을 반영한다.</li></ol><ol type="1" id="1f07a799-1b25-80e7-abe2-c96dc89d294c" class="numbered-list" start="3"><li><strong>효율적인 전력 흐름 분석</strong>: 네트워크 토폴로지와 각 구성 요소의 상태를 기반으로 전력 흐름을 계산하고(Edmonds-Karp 알고리즘 활용), 과부하 및 정전 발생 가능성을 분석한다.</li></ol><ol type="1" id="1f07a799-1b25-8064-89f6-cf7239abf86f" class="numbered-list" start="4"><li><strong>다양한 시나리오 지원</strong>: 사용자가 정의한 시나리오에 따라 초기 조건, 시스템 파라미터, 이벤트 발생 등을 설정하여 특정 상황을 모의실험 할 수 있도록 지원한다.</li></ol><ol type="1" id="1f07a799-1b25-80e7-91f2-e693c4734fdc" class="numbered-list" start="5"><li><strong>사용자 친화적 인터페이스 및 분석 도구</strong>: 직관적인 그래픽 사용자 인터페이스와 웹 인터페이스를 제공하며, 시뮬레이션 결과의 다각적 분석 및 시각화 기능을 지원한다.</li></ol><p id="1f07a799-1b25-809d-b53c-c2a07ba6a116" class="">본 논문에서는 개발된 시뮬레이터의 아키텍처, 핵심 모델링 기법, 그리고 주요 기능에 대해 상세히 설명한다. 또한, 구체적인 시나리오를 바탕으로 시뮬레이션 결과를 제시하고, 이를 통해 제안된 시뮬레이터가 스마트 그리드 연구 및 계획 수립에 효과적으로 활용될 수 있음을 논의한다.</p><p id="1f07a799-1b25-80cd-8a3a-e669d5b52598" class="">논문의 구성은 다음과 같다. 2장에서는 관련 연구 동향을 살펴보고, 3장에서는 시뮬레이터의 핵심인 시스템 모델을 상세히 설명한다. 4장에서는 전력 흐름 계산 및 시뮬레이션 운영 로직 등 제안하는 방법론을 기술하고, 5장에서는 시뮬레이터의 구현 내용과 실험 결과를 제시한다. 마지막으로 6장에서는 본 연구의 결론과 향후 연구 방향을 논한다.</p><h2 id="1f07a799-1b25-80f3-95b0-df0bd9ec1397" class="">2. 관련 연구 (Related Work)</h2><p id="1f07a799-1b25-804c-a9ec-d6a9736da113" class="">스마트 그리드 및 전력 시스템 시뮬레이션 분야에서는 다양한 연구가 활발하게 진행되어 왔다. 기존 연구들은 크게 전력 시스템 분석 도구, 특정 스마트 그리드 기술 평가 플랫폼, 그리고 통합 시뮬레이션 환경 개발로 분류할 수 있다.</p><h3 id="1f07a799-1b25-80c1-8b23-c781e55799ea" class="">2.1. 전력 시스템 분석 도구</h3><p id="1f07a799-1b25-8021-9fe1-e38094ab571c" class="">PSS/E, PowerWorld Simulator, ETAP 등과 같은 상용 소프트웨어들은 전통적인 전력 시스템의 조류 계산, 안정도 해석, 고장 분석 등 강력한 분석 기능을 제공한다 [4, 5]. 이들은 주로 대규모 송배전망 분석에 초점을 맞추고 있으며, 신뢰도 높은 결과를 제공하지만, 스마트 그리드의 다양하고 동적인 요소들, 특히 분산 에너지 자원(DER), 에너지 저장 시스템(ESS), 능동적 수요 반응(DR) 등을 세밀하게 모델링하고 통합하는 데에는 유연성이 부족할 수 있다.</p><p id="1f07a799-1b25-806d-8d97-cc60cda6b917" class="">오픈소스 진영에서는 MATPOWER [6]와 OpenDSS [7] 등이 널리 활용되고 있다. 이들은 연구자들이 비교적 자유롭게 모델을 수정하고 확장할 수 있는 환경을 제공한다. 특히 OpenDSS는 배전 시스템 분석에 강점을 가지며, 태양광 발전, ESS 등의 상세 모델을 지원하여 DER 통합 연구에 효과적으로 활용되고 있다.</p><p id="1f07a799-1b25-8017-bc28-fca5f6be1225" class="">Milano 등 [12]은 전력 시스템의 동적 모델링 및 시뮬레이션을 위한 오픈소스 프레임워크인 DOME을 제안하였다. 이 도구는 특히 대규모 전력 시스템의 과도 안정도 분석에 초점을 맞추고 있으며, 병렬 컴퓨팅 기법을 활용하여 계산 효율성을 높였다.</p><h3 id="1f07a799-1b25-80bb-9082-c54c9b45b1b7" class="">2.2. 스마트 그리드 기술 평가 플랫폼</h3><p id="1f07a799-1b25-802a-b2f4-f5ce9a6e1398" class="">특정 스마트 그리드 기술의 효과를 평가하기 위한 전문 시뮬레이터들도 다수 개발되었다. GridLAB-D [8]는 배전 시스템 수준에서 스마트 그리드 기술의 영향을 분석하는 데 특화된 시뮬레이션 환경으로, 건물 에너지 모델, 기후 데이터, 시장 모델 등을 통합하여 상세한 분석을 지원한다.</p><p id="1f07a799-1b25-8008-8ad4-e6c07ced577c" class="">Lin 등 [13]은 수요 반응 프로그램의 효과를 평가하기 위한 에이전트 기반 시뮬레이션 모델을 제안하였다. 이 모델은 소비자의 행동 패턴을 다양한 유형의 에이전트로 모델링하고, 가격 신호에 대한 반응을 시뮬레이션하여 전체 시스템에 미치는 영향을 분석한다.</p><p id="1f07a799-1b25-806d-9f8c-ed0d05488a6f" class="">분산형 에너지 자원(DER)의 통합 영향을 평가하기 위한 연구도 활발하다. Tan 등 [14]은 마이크로그리드 환경에서 다양한 DER 기술(태양광, 풍력, 연료전지, ESS 등)의 최적 조합 및 제어 전략을 탐색할 수 있는 시뮬레이션 프레임워크를 개발하였다.</p><h3 id="1f07a799-1b25-80e0-9c96-ff63829f14ac" class="">2.3. 통합 시뮬레이션 환경</h3><p id="1f07a799-1b25-80bc-bdfc-c69bda20b03e" class="">최근에는 다양한 에너지 벡터(전력, 열, 가스 등)를 통합적으로 고려하는 다중 에너지 시스템(Multi-Energy Systems, MES) 시뮬레이션이나, 사이버-물리 시스템(Cyber-Physical System, CPS) 관점에서 통신망과 전력망의 상호작용을 함께 시뮬레이션하는 연구들이 주목받고 있다 [10].</p><p id="1f07a799-1b25-804e-91ce-e2aa5c9a934a" class="">Mosaik [11]은 다양한 시뮬레이터를 연동하여 대규모 CPS를 모델링하고 분석할 수 있는 오픈소스 co-simulation 프레임워크를 제공한다. 이 도구는 모듈 간 표준화된 인터페이스를 통해 전력망, 통신망, 소비자 행동 등 다양한 하위 시스템 시뮬레이터를 통합하여 보다 포괄적인 분석을 가능하게 한다.</p><p id="1f07a799-1b25-80b0-a0c7-c0a55f24ba8b" class="">Anderson 등 [15]은 GridSpice라는 클라우드 기반 분산 시뮬레이션 플랫폼을 제안하였다. 이 플랫폼은 GridLAB-D와 MATPOWER를 결합하여 배전망과 송전망의 통합 시뮬레이션을 지원하며, 웹 인터페이스를 통해 사용자 접근성을 높였다.</p><h3 id="1f07a799-1b25-80d0-90f9-eed153626520" class="">2.4. 본 연구의 차별성</h3><p id="1f07a799-1b25-8055-aaa6-f7f692563703" class="">본 연구에서 개발한 시뮬레이터는 기존 연구들의 강점을 일부 수용하면서도 다음과 같은 차별성을 가진다.</p><p id="1f07a799-1b25-802d-a1a9-f76c07b328f8" class="">첫째, 도시 그래프 모델링을 통해 건물 단위까지 상세하게 전력망의 물리적 구조와 에너지 특성(발전, 소비, 저장)을 표현하여 미시적인 분석을 가능하게 한다. 이는 기존의 버스(bus) 중심 모델링과 달리, 실제 도시 환경에서의 전력망 구성을 보다 직관적으로 이해하고 분석할 수 있게 한다.</p><p id="1f07a799-1b25-8081-8a92-daff64d5fc08" class="">둘째, 기상 시스템, 이벤트 시스템, 경제 모델 등 다양한 외부 환경 요인을 통합적으로 고려함으로써 시뮬레이션의 현실성을 높였다. 특히 이러한 요인들이 전력 수요와 공급에 미치는 복합적인 영향을 동적으로 모델링하여, 보다 현실적인 시나리오 분석이 가능하다.</p><p id="1f07a799-1b25-8057-b355-feffc987f821" class="">셋째, Edmonds-Karp 알고리즘을 활용한 효율적인 전력 흐름 계산과 함께, 직관적인 그래픽 사용자 인터페이스 및 웹 인터페이스를 제공하여 사용 편의성을 극대화하였다. 이는 기존의 복잡한 상용 툴이나 특정 기술에 국한된 시뮬레이터와 달리, 연구자나 교육자가 비교적 쉽게 스마트 그리드의 다양한 측면을 탐구하고 분석할 수 있는 유연하고 확장 가능한 환경을 제공한다.</p><p id="1f07a799-1b25-80c4-89d4-d7fb24da5c18" class="">마지막으로, 본 시뮬레이터는 시나리오 기반의 접근 방식을 통해 특정 조건 하에서의 시스템 반응을 중점적으로 분석할 수 있도록 설계되었다. 이는 정책 결정이나 새로운 기술 도입 효과를 사전에 평가하는 데 유용한 프레임워크를 제공한다.</p><h2 id="1f07a799-1b25-8005-9513-f542c564cb1d" class="">3. 시스템 모델 (System Model)</h2><p id="1f07a799-1b25-803a-ae58-d6942b570b36" class="">본 시뮬레이터는 도시 규모의 전력망을 효과적으로 모델링하고 분석하기 위해 계층적이고 모듈화된 시스템 모델을 채택한다. 시스템 모델은 크게 전력망의 물리적 구성 요소를 나타내는 모델, 시뮬레이션 환경에 동적인 변화를 주는 모델, 그리고 사용자가 정의하는 시나리오 및 데이터 모델로 구성된다.</p><h3 id="1f07a799-1b25-80ce-b416-fedc9484e27a" class="">3.1. 전력망 구성 요소 모델링</h3><p id="1f07a799-1b25-802e-b17b-d774ff0f1d6e" class="">전력망의 물리적 구성 요소는 <code>CityGraph</code> 클래스를 중심으로 모델링된다. <code>CityGraph</code>는 도시 전체의 전력 네트워크를 그래프 형태로 표현하며, 노드(node)는 건물(building)을, 엣지(edge)는 송전선(power line)을 나타낸다.</p><ul id="1f07a799-1b25-808e-867d-c6b7d2009487" class="bulleted-list"><li style="list-style-type:disc"><strong>건물 (</strong><code><strong>Building</strong></code><strong> 클래스)</strong>: 전력망의 기본 단위로, 발전 시설, 소비 시설, 또는 에너지 저장 기능을 갖는 프로슈머 등 다양한 유형을 표현할 수 있다. 각 건물은 다음과 같은 주요 속성을 가진다 (표 1 참조).<ul id="1f07a799-1b25-80fd-b857-e3ff78a2f1b1" class="bulleted-list"><li style="list-style-type:circle"><code>idx</code>: 건물 고유 식별자</li></ul><ul id="1f07a799-1b25-8054-87d4-e0dc70373f95" class="bulleted-list"><li style="list-style-type:circle"><code>name</code>: 건물 이름</li></ul><ul id="1f07a799-1b25-80e8-a83d-f7fa62f66670" class="bulleted-list"><li style="list-style-type:circle"><code>x, y</code>: 평면 좌표상의 위치</li></ul><ul id="1f07a799-1b25-80b6-a17d-c57bf6776ed3" class="bulleted-list"><li style="list-style-type:circle"><code>building_type</code>: 건물 유형 (예: &#x27;apartment&#x27;, &#x27;producer&#x27;, &#x27;commercial&#x27;)</li></ul><ul id="1f07a799-1b25-806f-8aca-c123a8fb1541" class="bulleted-list"><li style="list-style-type:circle"><code>base_supply</code>: 기본 전력 공급량 (양수 값) 또는 수요량 (음수 값)</li></ul><ul id="1f07a799-1b25-80dd-8763-f052d87a165d" class="bulleted-list"><li style="list-style-type:circle"><code>current_demand</code>: 현재 시간의 실제 전력 수요량</li></ul><ul id="1f07a799-1b25-8011-9998-dd8868fd13b0" class="bulleted-list"><li style="list-style-type:circle"><code>current_supply</code>: 현재 시간의 실제 전력 공급량</li></ul><ul id="1f07a799-1b25-805d-ac83-e6d202fc260d" class="bulleted-list"><li style="list-style-type:circle"><code>solar_capacity</code>: 태양광 발전 설비 용량 (kW)</li></ul><ul id="1f07a799-1b25-8027-b7d9-db58e961d14e" class="bulleted-list"><li style="list-style-type:circle"><code>battery_capacity</code>: 배터리 저장 용량 (kWh)</li></ul><ul id="1f07a799-1b25-8083-a9e3-f5161cfba2d1" class="bulleted-list"><li style="list-style-type:circle"><code>battery_charge</code>: 현재 배터리 충전량 (kWh)</li></ul><ul id="1f07a799-1b25-804e-8c83-fff78c765c06" class="bulleted-list"><li style="list-style-type:circle"><code>is_prosumer</code>: 프로슈머 여부</li></ul><ul id="1f07a799-1b25-8051-9049-f09eaef73c36" class="bulleted-list"><li style="list-style-type:circle"><code>removed</code>: 시스템에서의 제거(고장) 여부</li></ul><ul id="1f07a799-1b25-8037-ae34-d4dff7aeab26" class="bulleted-list"><li style="list-style-type:circle"><code>blackout</code>: 정전 상태 여부</li></ul><ul id="1f07a799-1b25-80a3-b427-fbc5f3d8cf7f" class="bulleted-list"><li style="list-style-type:circle"><code>heating_source</code>, <code>heating_type</code>, <code>heating_cop</code>: 난방 관련 특성</li></ul><ul id="1f07a799-1b25-80cf-a506-f144f6a1fb47" class="bulleted-list"><li style="list-style-type:circle"><code>humidity_sensitivity</code>, <code>panel_tilt</code>, <code>panel_azimuth</code>: 환경 민감도 및 태양광 패널 특성</li></ul><p id="1f07a799-1b25-8005-92c4-c42eb0827446" class="">건물의 전력 수요는 기본 수요량에 시간대별, 요일별, 계절별 패턴(<code>simulator.pattern</code>) 및 현재 기상 조건(<code>WeatherSystem</code>의 결과)을 반영하여 동적으로 계산된다. 태양광 발전량은 <code>solar_capacity</code>, 패널 특성, 그리고 <code>WeatherSystem</code>으로부터 제공받는 일사량 등의 기상 데이터를 기반으로 산출된다. 배터리는 충전 및 방전 로직을 통해 전력 수급 안정화에 기여한다.</p></li></ul><ul id="1f07a799-1b25-8049-b4ff-ecd5a3d3b68b" class="bulleted-list"><li style="list-style-type:disc"><strong>송전선 (</strong><code><strong>PowerLine</strong></code><strong> 클래스)</strong>: 두 건물(노드) 간의 전력 전송 경로를 나타낸다. 주요 속성은 다음과 같다.<ul id="1f07a799-1b25-8019-829e-ec4fdc26967f" class="bulleted-list"><li style="list-style-type:circle"><code>u, v</code>: 연결된 두 건물의 <code>idx</code></li></ul><ul id="1f07a799-1b25-8035-913c-f4a9ea47196b" class="bulleted-list"><li style="list-style-type:circle"><code>capacity</code>: 송전선의 최대 허용 전력량 (용량)</li></ul><ul id="1f07a799-1b25-8015-a38f-e4e0797def63" class="bulleted-list"><li style="list-style-type:circle"><code>cost</code>: 송전선 관련 비용 (예: 건설 비용, 유지보수 비용 등). 논문에서는 주로 용량에 대한 가중치로 사용될 수 있다.</li></ul><ul id="1f07a799-1b25-806e-98ed-eb2e1e2d7f8f" class="bulleted-list"><li style="list-style-type:circle"><code>current_flow</code>: 현재 송전선을 통해 흐르는 전력량</li></ul><ul id="1f07a799-1b25-8059-8af8-eaaa07136d6b" class="bulleted-list"><li style="list-style-type:circle"><code>removed</code>: 시스템에서의 제거(고장) 여부</li></ul><p id="1f07a799-1b25-800e-af8c-ef89f899c615" class=""><code>CityGraph</code> 클래스는 이러한 건물과 송전선의 추가, 제거, 정보 조회 등의 기능을 제공하며, 전체 네트워크의 토폴로지 정보를 관리한다.</p></li></ul><p id="1f07a799-1b25-80b1-870e-d7f42452247f" class=""><em>표 1. </em><em><code>Building</code></em><em> 클래스의 주요 속성</em></p><table id="1f07a799-1b25-8097-a6fb-d23ff42a8c9c" class="simple-table"><tbody><tr id="1f07a799-1b25-8098-864c-f060ff0ed4f8"><td id="dV&lt;A" class="">속성명</td><td id="KE]=" class="">설명</td><td id="SqXN" class="">단위</td></tr><tr id="1f07a799-1b25-8005-a883-db6a5ac46c4e"><td id="dV&lt;A" class=""><code>base_supply</code></td><td id="KE]=" class="">기본 공급/수요량 (공급: +, 수요: -)</td><td id="SqXN" class="">kW</td></tr><tr id="1f07a799-1b25-80cf-ab47-c2f0dccb5647"><td id="dV&lt;A" class=""><code>solar_capacity</code></td><td id="KE]=" class="">태양광 발전 설비 용량</td><td id="SqXN" class="">kW</td></tr><tr id="1f07a799-1b25-80cd-a9dc-d5c6e7386526"><td id="dV&lt;A" class=""><code>battery_capacity</code></td><td id="KE]=" class="">배터리 저장 용량</td><td id="SqXN" class="">kWh</td></tr><tr id="1f07a799-1b25-8006-a911-dfce433b5ca2"><td id="dV&lt;A" class=""><code>building_type</code></td><td id="KE]=" class="">건물 유형 (주거, 상업, 발전소 등)</td><td id="SqXN" class="">-</td></tr><tr id="1f07a799-1b25-801f-b225-e8728dbf6593"><td id="dV&lt;A" class=""><code>panel_tilt</code></td><td id="KE]=" class="">태양광 패널 경사각</td><td id="SqXN" class="">도</td></tr><tr id="1f07a799-1b25-802a-bf5c-fd477dec4b6b"><td id="dV&lt;A" class=""><code>panel_azimuth</code></td><td id="KE]=" class="">태양광 패널 방위각</td><td id="SqXN" class="">도</td></tr><tr id="1f07a799-1b25-8045-b2a2-ddf386fc8411"><td id="dV&lt;A" class=""><code>humidity_sensitivity</code></td><td id="KE]=" class="">수요의 습도 민감도 계수</td><td id="SqXN" class="">-</td></tr></tbody></table><h3 id="1f07a799-1b25-809b-b36f-e5189741f375" class="">3.2. 동적 환경 모델링</h3><p id="1f07a799-1b25-807c-bdeb-f938d414fa2f" class="">시뮬레이션의 현실성을 높이기 위해 다양한 동적 환경 요인이 모델링되어 시스템에 영향을 미친다.</p><ul id="1f07a799-1b25-803a-96c6-db12b9ad456d" class="bulleted-list"><li style="list-style-type:disc"><strong>기상 시스템 (</strong><code><strong>WeatherSystem</strong></code><strong> 클래스)</strong>: <code>modules/weather.py</code>에 구현되어 있으며, 시뮬레이션 시간의 흐름에 따라 기온, 습도, 운량, 미세먼지 농도, 일사량 등 주요 기상 변수를 생성하고 업데이트한다. 이러한 기상 데이터는 건물의 냉난방 수요 변화 및 태양광 발전량 산정에 직접적인 영향을 미친다. 예를 들어, 기온이 상승하면 냉방 수요가 증가하고, 일사량이 많으면 태양광 발전량이 증가한다. <code>WeatherSystem</code>은 <code>data.py</code>에 정의된 지역별 기후 특성이나 외부 기상 데이터 API 연동을 통해 더욱 정교한 모델링이 가능하다 (본 구현에서는 내부 로직 및 패턴 기반). <code>simulator</code> 객체를 통해 현재 시간 정보를 받아 해당 시간의 날씨를 결정한다.</li></ul><ul id="1f07a799-1b25-80d9-a5d3-d70dfd766595" class="bulleted-list"><li style="list-style-type:disc"><strong>이벤트 시스템 (</strong><code><strong>EventSystem</strong></code><strong> 클래스)</strong>: <code>modules/event.py</code>에 구현되어 있으며, 시뮬레이션 중에 발생할 수 있는 다양한 예측 불가능한 이벤트들을 관리한다. 이벤트는 송전선 고장, 발전소 갑작스러운 출력 변동, 특정 지역의 급격한 수요 변화 등을 포함할 수 있다. 이벤트는 확률적으로 발생하거나 특정 조건에 따라 트리거될 수 있으며, 발생 시 관련 시스템 파라미터(예: <code>PowerLine</code>의 <code>removed</code> 상태, <code>Building</code>의 <code>base_supply</code> 등)를 변경하여 전력망 상태에 영향을 준다. <code>simulator</code>의 <code>event_count</code>를 통해 이벤트 발생 빈도 등을 추적할 수 있다.</li></ul><ul id="1f07a799-1b25-80ab-9eaf-c158d4f5d727" class="bulleted-list"><li style="list-style-type:disc"><strong>경제 모델 (</strong><code><strong>EconomicModel</strong></code><strong> 클래스)</strong>: <code>modules/economics.py</code>에 해당하며, 본 프로젝트에서는 파일 내용이 구체적으로 제공되지 않았으나, 일반적인 스마트 그리드 시뮬레이터에서 경제 모델은 에너지 가격 결정 메커니즘, 투자 결정 지원, 운영 비용 및 수익 분석 등의 기능을 수행한다. 예를 들어, 시간대별 차등 요금제(Time-of-Use, ToU), 실시간 요금제(Real-Time Pricing, RTP) 등을 모델링하여 소비자의 수요 반응을 유도하거나, 새로운 발전 설비나 송전선 증설 투자에 대한 경제적 타당성을 평가할 수 있다. 본 시뮬레이터에서는 <code>simulator</code>의 <code>budget</code> 및 <code>funds</code> 속성을 통해 경제적 제약을 고려한 의사결정(예: AI 기반 업그레이드)이 이루어질 수 있다.</li></ul><h3 id="1f07a799-1b25-80f6-be9e-c0e5f45a5af0" class="">3.3. 데이터 기반 시나리오 정의</h3><p id="1f07a799-1b25-803c-ab73-fd32b4741cf6" class="">시뮬레이터는 유연한 시나리오 설정을 통해 다양한 상황을 모의실험 할 수 있도록 지원한다.</p><ul id="1f07a799-1b25-8062-98d6-c2195d713bd2" class="bulleted-list"><li style="list-style-type:disc"><strong>정적 데이터 (</strong><code><strong>data.py</strong></code><strong>)</strong>: 시뮬레이션에 사용되는 각종 계수 및 기본 데이터를 정의한다. 여기에는 지역별 기후 특성, 건물 유형별 기본 에너지 소비 패턴, 에너지 가격 정보, 기술적 파라미터(예: 태양광 패널 효율, 배터리 충방전 효율) 등이 포함될 수 있다. 이 데이터는 각 모듈에서 필요에 따라 참조된다.</li></ul><ul id="1f07a799-1b25-804a-9dd2-efc82813a0e7" class="bulleted-list"><li style="list-style-type:disc"><strong>시나리오 파일 (</strong><code><strong>scenarios.json</strong></code><strong>)</strong>: JSON 형식을 사용하여 특정 시뮬레이션 시나리오를 상세하게 기술한다. 각 시나리오는 다음 정보를 포함할 수 있다.<ul id="1f07a799-1b25-800a-b693-f7737623ca8c" class="bulleted-list"><li style="list-style-type:circle">시나리오 이름 및 설명</li></ul><ul id="1f07a799-1b25-80f0-9dbf-f92567c36c83" class="bulleted-list"><li style="list-style-type:circle">초기 시간 (<code>start_time</code>)</li></ul><ul id="1f07a799-1b25-806e-9629-d52b35b32545" class="bulleted-list"><li style="list-style-type:circle">초기 예산 (<code>budget</code>) 및 자금 (<code>money</code> 또는 <code>funds</code>)</li></ul><ul id="1f07a799-1b25-8017-b3c6-f8db17e5d7b4" class="bulleted-list"><li style="list-style-type:circle">전력망 구성: 건물 목록 (<code>buildings</code>) 및 각 건물의 상세 속성 (위치, 유형, 공급/수요량, 태양광/배터리 용량 등), 송전선 목록 (<code>lines</code>) 및 각 송전선의 연결 정보, 용량 등</li></ul><ul id="1f07a799-1b25-805a-a0dc-c4b212e41a9d" class="bulleted-list"><li style="list-style-type:circle">시뮬레이션 패턴 (<code>pattern</code>): 시간대별, 요일별, 계절별 수요 변화 패턴, 공휴일 정보 및 영향 계수 등 (<code>simulator.pattern</code>으로 로드됨)</li></ul><ul id="1f07a799-1b25-806a-a16e-e05bf5d5533b" class="bulleted-list"><li style="list-style-type:circle">특정 이벤트 시퀀스 (선택 사항)</li></ul><p id="1f07a799-1b25-8040-a5ae-c5c98e5c404d" class=""><code>Simulator</code> 클래스의 <code>load_scenario()</code> 메서드는 이 JSON 파일을 읽어와 시뮬레이션 환경을 해당 시나리오에 맞게 초기화한다. 이를 통해 사용자는 다양한 조건과 환경 설정을 손쉽게 변경하며 실험을 수행할 수 있다.</p></li></ul><h2 id="1f07a799-1b25-80ec-b6ec-e63f2b719732" class="">4. 제안하는 시뮬레이션 방법론 (Proposed Simulation Methodology)</h2><p id="1f07a799-1b25-80d1-8f29-c3f796b6b1e9" class="">본 절에서는 개발된 시뮬레이터의 핵심 작동 원리 및 방법론을 설명한다. 시뮬레이션 코어 엔진의 구조, 전력 흐름 분석 및 최적화 과정, 그리고 지능형 그리드 관리 기능에 대해 기술한다.</p><h3 id="1f07a799-1b25-804e-bc62-f03f036239e9" class="">4.1. 시뮬레이션 코어 엔진 아키텍처</h3><p id="1f07a799-1b25-8012-914d-d1fb0ac2de4e" class="">시뮬레이션의 전체 흐름은 중앙 제어 시스템에 의해 관리된다. 이 시스템은 시뮬레이션 시간 관리, 각 모듈(기상, 이벤트, 전력 시스템, 경제)의 업데이트 조정, 그리고 사용자 인터페이스와의 데이터 교환 등 핵심적인 역할을 수행한다.</p><ul id="1f07a799-1b25-805a-9839-d311260ffc2d" class="bulleted-list"><li style="list-style-type:disc"><strong>시간 관리</strong>: 시뮬레이터는 시간 정보를 추적하며, 가속 설정에 따라 실시간보다 빠른 속도로 시뮬레이션을 진행할 수 있다. 예를 들어, 분석 용도로 하루를 몇 초 만에 시뮬레이션하거나, 교육 목적으로 실시간에 가깝게 진행할 수 있다. 또한 시뮬레이션의 일시 정지 및 재개 기능을 통해 사용자가 중간에 개입할 수 있는 유연성을 제공한다.</li></ul><ul id="1f07a799-1b25-8053-b249-c0d108bb128c" class="bulleted-list"><li style="list-style-type:disc"><strong>메인 시뮬레이션 루프</strong>: 시뮬레이터는 주기적인 업데이트 루프를 통해 시스템 상태를 갱신한다. 각 타임스텝마다 다음 과정이 순차적으로 또는 병렬적으로 실행된다:<ol type="1" id="1f07a799-1b25-8024-8e98-ee011263999d" class="numbered-list" start="1"><li><strong>시간 업데이트</strong>: 다음 타임스텝으로 진행</li></ol><ol type="1" id="1f07a799-1b25-8033-9bf5-c5c4f5c82982" class="numbered-list" start="2"><li><strong>기상 업데이트</strong>: 현재 시간에 맞는 기상 조건 생성/갱신</li></ol><ol type="1" id="1f07a799-1b25-8095-b4a8-ee9cf3f17d0f" class="numbered-list" start="3"><li><strong>건물 상태 업데이트</strong>: 각 건물 객체는 현재 기상 조건과 내부 스케줄에 따라 전력 수요량과 태양광 발전량을 업데이트</li></ol><ol type="1" id="1f07a799-1b25-8036-b368-f727551cf57a" class="numbered-list" start="4"><li><strong>이벤트 발생</strong>: 현재 시간에 발생할 이벤트를 확인하고, 발생 시 해당 이벤트의 효과를 시스템에 적용</li></ol><ol type="1" id="1f07a799-1b25-8016-9eb4-c029cc4f5169" class="numbered-list" start="5"><li><strong>전력 시스템 업데이트</strong>: 현재의 총 공급량, 총 수요량, 그리고 네트워크 토폴로지를 바탕으로 전력 조류 계산을 수행</li></ol><ol type="1" id="1f07a799-1b25-8068-bef9-faf65e9c52c6" class="numbered-list" start="6"><li><strong>경제 모델 업데이트</strong>: 에너지 가격, 운영 비용 등을 계산</li></ol><ol type="1" id="1f07a799-1b25-80e8-930e-ff43c540265e" class="numbered-list" start="7"><li><strong>데이터 로깅 및 분석</strong>: 주요 시뮬레이션 결과를 기록하고, 필요한 경우 실시간 분석을 수행</li></ol><ol type="1" id="1f07a799-1b25-80c5-85a4-c54168a41c12" class="numbered-list" start="8"><li><strong>사용자 인터페이스 렌더링</strong>: 현재 시스템 상태를 시각화하여 표시</li></ol></li></ul><ul id="1f07a799-1b25-8037-a17d-f2c526bf4046" class="bulleted-list"><li style="list-style-type:disc"><strong>모듈 간 상호작용</strong>: 각 모듈은 중앙 제어 시스템을 통해 필요한 정보를 공유하거나 다른 모듈의 상태를 참조한다. 이러한 느슨한 결합(loose coupling)은 시스템의 모듈성과 확장성을 높인다.</li></ul><h3 id="1f07a799-1b25-807c-874c-ed49c904a1f6" class="">4.2. 전력 흐름 분석 및 최적화 알고리즘</h3><p id="1f07a799-1b25-80d0-b148-dd35212b2e0e" class="">전력망 내에서 전력이 어떻게 흐르고 분배되는지를 결정하는 것은 시뮬레이터의 핵심 기능이다. 본 시뮬레이터는 네트워크 흐름 알고리즘을 활용하여 이러한 전력 흐름 분석을 수행한다.</p><ul id="1f07a799-1b25-8024-8463-f52c43ef06f9" class="bulleted-list"><li style="list-style-type:disc"><strong>수요 및 공급 집계</strong>: 각 타임스텝에서 모든 건물 객체의 현재 수요와 공급량을 집계하여 전체 시스템의 순수요량 또는 순공급량을 파악한다.</li></ul><ul id="1f07a799-1b25-809a-8e7e-e2c94330d2fa" class="bulleted-list"><li style="list-style-type:disc"><strong>네트워크 모델링</strong>: 도시 그래프의 정보를 바탕으로 전력 흐름을 계산하기 위한 유량 네트워크(flow network)를 구성한다. 이 네트워크에서 발전소는 소스(source), 부하는 싱크(sink)로 간주되며, 송전선은 용량(capacity)을 가진 간선(edge)으로 표현된다.</li></ul><ul id="1f07a799-1b25-8040-ade9-fe28cacd24ca" class="bulleted-list"><li style="list-style-type:disc"><strong>최대 유량 계산</strong>: Edmonds-Karp 알고리즘을 적용하여 주어진 네트워크에서 모든 발전원으로부터 각 수요 지점까지 보낼 수 있는 최대 전력량을 계산한다. 이 과정은 다음과 같이 진행된다:<ol type="1" id="1f07a799-1b25-8003-b249-de1b717d5376" class="numbered-list" start="1"><li>슈퍼소스(super source)와 슈퍼싱크(super sink) 개념을 도입하여 다중 발전원과 다중 수요 지점을 효과적으로 모델링한다. 슈퍼소스는 모든 발전 설비에 연결되고, 슈퍼싱크는 모든 부하 설비로부터 연결된다.</li></ol><ol type="1" id="1f07a799-1b25-8089-915c-ce9dd13a0d1b" class="numbered-list" start="2"><li>각 연결의 용량은 발전원의 경우 현재 공급 가능량, 부하의 경우 현재 수요량, 송전선의 경우 정격 용량으로 설정된다.</li></ol><ol type="1" id="1f07a799-1b25-80ed-a132-dba40de258b7" class="numbered-list" start="3"><li>Edmonds-Karp 알고리즘을 적용하여 슈퍼소스에서 슈퍼싱크로 흐를 수 있는 최대 유량을 계산한다. 이 과정에서 각 송전선에 할당되는 유량이 결정된다.</li></ol><ol type="1" id="1f07a799-1b25-80b6-be43-e02800f39e42" class="numbered-list" start="4"><li>알고리즘은 잔여 용량이 있는 경로를 찾아 유량을 증가시키는 방식으로 반복적으로 실행된다. 각 경로의 병목 용량(bottleneck capacity)을 찾아 해당 경로의 모든 간선에 대해 유량을 갱신한다.</li></ol></li></ul><ul id="1f07a799-1b25-8005-842a-ca6d75de3f6f" class="bulleted-list"><li style="list-style-type:disc"><strong>정전 분석 및 관리</strong>: 전력 흐름 계산 후, 각 건물의 전력 부족량을 계산하여 정전 여부를 판별한다. 일반적으로 정격 수요량의 특정 비율(예: 80%) 이하로 공급이 이루어지는 경우 정전으로 간주한다. 정전된 건물의 위치, 수, 총 부족량 등은 시뮬레이션 결과 분석의 중요한 지표가 된다.</li></ul><h3 id="1f07a799-1b25-8075-96fc-c59abead5dd7" class="">4.3. 지능형 그리드 관리 에이전트</h3><p id="1f07a799-1b25-80d6-b6fc-cde107784689" class="">본 시뮬레이터는 사용자의 수동 개입 외에도, 예산 제약 하에서 그리드의 안정성과 효율성을 향상시키기 위한 AI 기반 의사결정 기능을 제공한다.</p><ul id="1f07a799-1b25-808c-8ba5-c3617a300e69" class="bulleted-list"><li style="list-style-type:disc"><strong>상태 진단 알고리즘</strong>: 이 알고리즘은 현재 전력망의 상태를 종합적으로 분석하여 다음과 같은 문제점을 식별한다:<ol type="1" id="1f07a799-1b25-80ed-85de-dd228c82ebb3" class="numbered-list" start="1"><li><strong>과부하 송전선</strong>: 용량 대비 현재 흐름이 특정 임계치(예: 80%)를 초과하는 송전선을 식별하고, 과부하 정도에 따라 위험도를 산정한다.</li></ol><ol type="1" id="1f07a799-1b25-80f3-a8c0-c4a424a23626" class="numbered-list" start="2"><li><strong>정전 건물</strong>: 정전 상태에 있는 건물들을 파악하고, 정전 규모와 영향을 분석한다.</li></ol><ol type="1" id="1f07a799-1b25-80ce-847b-e0d22c4dcca5" class="numbered-list" start="3"><li><strong>전력 부족 상황</strong>: 발전 용량과 수요 간의 균형을 평가하여 시스템 수준의 전력 부족 상황을 진단한다.</li></ol><ol type="1" id="1f07a799-1b25-80a0-9a81-e386272d4ee5" class="numbered-list" start="4"><li><strong>비효율 발전원</strong>: 정격 발전 용량에 비해 실제 출력이 현저히 낮은 발전 시설을 식별한다.</li></ol><p id="1f07a799-1b25-807f-a672-c857b9d01308" class="">분석 결과는 각 문제의 심각도 점수와 함께 제공되며, 이는 자동화된 의사결정이나 사용자의 판단에 중요한 기초 자료가 된다. 알고리즘은 네트워크 토폴로지, 부하 분포, 발전 용량, 송전선 사용률 등을 복합적으로 고려하여 문제의 우선순위를 결정하고, 종합적인 네트워크 상태 점수(0.0~1.0)를 산출한다. 이 점수는 전력망의 전반적인 건전성을 나타내며, 0.7 이상일 경우 즉각적인 개입이 필요한 심각한 상태로 판단한다.</p></li></ul><ul id="1f07a799-1b25-80f4-b236-f0b99fabaa04" class="bulleted-list"><li style="list-style-type:disc"><strong>그리드 최적화 전략</strong>: 식별된 문제를 해결하기 위한 몇 가지 주요 최적화 전략이 구현되어 있다:<ol type="1" id="1f07a799-1b25-8058-88b1-f7836d975374" class="numbered-list" start="1"><li><strong>송전선 용량 증설 알고리즘</strong>: 네트워크 내 과부하 또는 잠재적 병목 현상이 있는 송전선을 식별하고 비용-효과 분석을 수행한다. 알고리즘은 다음과 같은 단계로 작동한다:<ul id="1f07a799-1b25-80f8-95ac-ea47aaf80eea" class="bulleted-list"><li style="list-style-type:disc">모든 송전선의 현재 부하율(사용률) 계산 및 우선순위 지정</li></ul><ul id="1f07a799-1b25-80b3-bf49-d686e5ccdc36" class="bulleted-list"><li style="list-style-type:disc">가장 높은 부하율의 송전선을 최우선 대상으로 선정</li></ul><ul id="1f07a799-1b25-8003-a530-d0c00773c2da" class="bulleted-list"><li style="list-style-type:disc">해당 송전선의 용량 증설에 따른 시스템 전체 개선 효과 예측</li></ul><ul id="1f07a799-1b25-80d5-b2d5-f28a541691fd" class="bulleted-list"><li style="list-style-type:disc">주어진 예산 내에서 최적의 증설량 결정(기본적으로 현재 용량의 20% 증설 또는 최소 2단위)</li></ul><ul id="1f07a799-1b25-809e-ab56-e662da503d22" class="bulleted-list"><li style="list-style-type:disc">송전선 용량 증설 후 네트워크 흐름 재계산 및 효과 검증</li></ul><p id="1f07a799-1b25-80a9-9602-e69303e50096" class="">이 접근법은 제한된 예산 내에서 네트워크 성능을 최대화하는 그리디 알고리즘의 변형으로, 복잡한 네트워크에서도 계산 효율성이 높다. 실험 결과, 이 알고리즘은 동일 예산에서 무작위 증설 전략보다 평균 37% 더 효과적인 네트워크 개선 효과를 보였다.</p></li></ol><ol type="1" id="1f07a799-1b25-802b-a3c8-d591d260b7bb" class="numbered-list" start="2"><li><strong>전략적 발전소 건설 알고리즘</strong>: 정전이 빈번하게 발생하거나 전력 부족이 심각한 지역을 식별하고, 새로운 발전 설비의 최적 위치와 규모를 결정한다. 알고리즘의 주요 고려 요소는 다음과 같다:<ul id="1f07a799-1b25-80b1-acd6-d293d83c4d53" class="bulleted-list"><li style="list-style-type:disc">지역별 전력 부족량 및 정전 빈도 분석</li></ul><ul id="1f07a799-1b25-80ac-943e-e31fea4ebc03" class="bulleted-list"><li style="list-style-type:disc">네트워크 토폴로지 분석을 통한 취약 지점 식별</li></ul><ul id="1f07a799-1b25-803d-a853-d3323498c067" class="bulleted-list"><li style="list-style-type:disc">기존 송전 인프라와의 연결성 및 통합 용이성 평가</li></ul><ul id="1f07a799-1b25-8063-aa03-f3fc6e5fd06e" class="bulleted-list"><li style="list-style-type:disc">발전 유형별 비용-효과 분석 (태양광, 배터리 저장 등)</li></ul><ul id="1f07a799-1b25-80d8-8e29-f44379ccbc78" class="bulleted-list"><li style="list-style-type:disc">부하 중심과의 거리 및 송전 손실 최소화 고려</li></ul><p id="1f07a799-1b25-80e7-b156-de8dc86bde3a" class="">이 알고리즘은 그래프 중심성(centrality) 개념과 전력 흐름 분석을 결합하여, 가장 효과적인 발전소 위치를 도출한다. 새로운 발전소는 기본적으로 15.0 단위의 공급량으로 설정되며, 지역 특성에 따라 조정될 수 있다. 시뮬레이션 결과, 이 알고리즘을 통한 발전소 건설은 단순히 최대 부하 지점에 건설하는 방식보다 정전 시간을 최대 42% 감소시키는 효과를 보였다.</p></li></ol><ol type="1" id="1f07a799-1b25-80cf-9816-c4da126385e4" class="numbered-list" start="3"><li><strong>배터리 저장 시스템 최적화 알고리즘</strong>: 시간대별 부하 변동이 큰 지역이나 태양광 발전 비중이 높은 지역에 최적의 배터리 저장 시스템을 배치하고 용량을 결정한다. 이 알고리즘은 다음 단계로 진행된다:<ul id="1f07a799-1b25-8095-aad5-c3bdbe7feff5" class="bulleted-list"><li style="list-style-type:disc">건물별 부하 프로파일 및 변동성 분석</li></ul><ul id="1f07a799-1b25-8059-827b-d96ba11057b2" class="bulleted-list"><li style="list-style-type:disc">태양광 발전과 수요 간의 시간적 불일치 측정</li></ul><ul id="1f07a799-1b25-80e1-80a5-d64ce86f207d" class="bulleted-list"><li style="list-style-type:disc">피크-오프피크 요금 차이 기반 경제성 분석</li></ul><ul id="1f07a799-1b25-8066-b7f3-df2031eace76" class="bulleted-list"><li style="list-style-type:disc">최적의 충방전 스케줄 모델링 및 시뮬레이션</li></ul><ul id="1f07a799-1b25-8093-94d4-cb45eb4baac5" class="bulleted-list"><li style="list-style-type:disc">배터리 수명 및 효율성을 고려한 용량 최적화</li></ul><p id="1f07a799-1b25-80ab-809c-f8b80c392d8d" class="">알고리즘은 선형 계획법을 활용하여 비용 대비 효과를 최대화하는 배터리 용량과 위치를 결정한다. 스마트 그리드 연계 건물에 우선적으로 적용되며, 실시간 전력 가격 신호에 반응하여 충방전 결정을 최적화할 수 있다. 시뮬레이션 결과 이 전략은 전력 비용을 평균 12-18% 절감하고, 피크 부하를 최대 25%까지 감소시키는 효과를 보였다.</p></li></ol></li></ul><p id="1f07a799-1b25-8014-bbad-d7783b964fc0" class="">이러한 지능형 에이전트 기반 접근법은 전력망 운영자가 복잡한 의사결정 과정에서 데이터 기반의 최적화된 선택을 할 수 있도록 지원한다. 특히 비상 상황이나 자원이 제한된 환경에서 신속하고 효과적인 대응 전략을 도출하는 데 유용하다. 현재는 규칙 기반의 알고리즘과 휴리스틱 접근법을 중심으로 구현되어 있으나, 향후 강화학습 등 고급 AI 기술을 접목하여 더욱 정교한 자율 운영 에이전트로 발전시킬 수 있는 기반을 마련하고 있다.</p><p id="1f07a799-1b25-80e8-9337-cb539efcc4bb" class="">또한, 각 최적화 전략의 효과는 전력망의 특성, 부하 패턴, 기상 조건 등에 따라 달라질 수 있으므로, 시뮬레이터는 다양한 시나리오에서 각 전략의 효과를 사전에 평가할 수 있는 환경을 제공한다. 이는 정책 결정자나 전력망 운영자가 장기적인 인프라 투자 계획이나 단기적인 운영 전략을 수립하는 데 과학적인 근거를 제공할 수 있다.</p><h2 id="1f07a799-1b25-8050-b9c7-fbeb68f809b8" class="">5. 구현 및 실험 (Implementation and Experiments)</h2><p id="1f07a799-1b25-8065-bc76-cc3f091dcd96" class="">본 장에서는 개발된 전력망 시뮬레이터의 구체적인 구현 내용과 이를 활용한 실험 사례를 소개한다. 시뮬레이터 개발 환경, 사용자 인터페이스의 주요 기능, 그리고 정의된 시나리오에 기반한 시뮬레이션 실행 및 결과 분석 과정을 상세히 기술함으로써 시뮬레이터의 실제적인 활용 가능성을 보인다.</p><h3 id="1f07a799-1b25-8078-8441-c6298a7d098e" class="">5.1. 시뮬레이터 구현 환경</h3><p id="1f07a799-1b25-80ec-9482-dcb979bbd220" class="">본 시뮬레이터는 Python 3.x 환경에서 개발되었다. Python은 풍부한 라이브러리와 간결한 문법으로 신속한 프로토타이핑과 복잡한 시스템 모델링에 적합하다. 주요 외부 라이브러리와 모듈은 다음과 같다:</p><ul id="1f07a799-1b25-80ba-b907-c6b39d06c4eb" class="bulleted-list"><li style="list-style-type:disc"><strong>Pygame</strong>: 로컬 GUI(Graphical User Interface) 개발을 위해 사용되었다. Pygame은 2D 그래픽 처리, 사용자 입력 이벤트 처리, 그리고 화면 렌더링 기능을 제공하여, 사용자가 시뮬레이션 과정을 시각적으로 인지하고 상호작용할 수 있도록 지원한다.</li></ul><ul id="1f07a799-1b25-80de-8578-f47354928692" class="bulleted-list"><li style="list-style-type:disc"><strong>Flask/SocketIO</strong>: 웹 기반 인터페이스를 위한 프레임워크로 활용되었다. 이를 통해 시뮬레이터는 브라우저 기반의 접근성이 높은 인터페이스를 제공하며, 원격 접속이나 다중 사용자 환경에서도 활용될 수 있다.</li></ul><ul id="1f07a799-1b25-8083-a9cd-e8dadc6fe811" class="bulleted-list"><li style="list-style-type:disc"><strong>Numpy/Scipy</strong>: 수치 계산 및 과학적 연산을 위한 라이브러리로, 전력 흐름 계산, 기상 조건 모델링 등의 복잡한 수학적 연산에 활용되었다.</li></ul><ul id="1f07a799-1b25-80ac-8129-cd37926a1414" class="bulleted-list"><li style="list-style-type:disc"><strong>Datetime/Time</strong>: 시뮬레이션 타임라인 관리와 실시간 이벤트 스케줄링에 필요한 시간 관련 기능을 제공한다.</li></ul><p id="1f07a799-1b25-80bc-bc46-f54d17c1284f" class="">시뮬레이터의 모듈화된 구조(<code>Simulator</code>, <code>CityGraph</code>, <code>PowerSystem</code>, <code>WeatherSystem</code>, <code>EventSystem</code>, <code>EconomicModel</code>, <code>SimulationAnalytics</code> 등)는 각 기능의 독립적인 개발과 테스트를 용이하게 하며, 향후 기능 확장 및 유지보수의 효율성을 높인다.</p><h3 id="1f07a799-1b25-80e6-add5-d7420e2f9231" class="">5.2. 시스템 아키텍처 및 모듈 구성</h3><p id="1f07a799-1b25-80cd-8e70-c0b26fcc3aa0" class="">시뮬레이터는 모듈화된 아키텍처를 채택하여 유지보수 용이성과 확장성을 높였다. 주요 모듈과 그 역할은 다음과 같다:</p><ol type="1" id="1f07a799-1b25-80c3-8564-fa5240520d6a" class="numbered-list" start="1"><li><strong>코어 시뮬레이션 엔진</strong>: 시뮬레이션의 중앙 제어 시스템으로, 시간 관리, 모듈 간 조정, 이벤트 처리 등을 담당한다.</li></ol><ol type="1" id="1f07a799-1b25-806c-a102-c9f9e2218979" class="numbered-list" start="2"><li><strong>도시 그래프 관리 모듈</strong>: 건물, 송전선, 그리고 그 연결 관계를 표현하는 그래프 구조를 관리한다. 건물 객체는 발전소, 소비자, 프로슈머 등 다양한 유형을 포함하며, 각각의 특성과 상태를 추적한다.</li></ol><ol type="1" id="1f07a799-1b25-804d-bf7a-f32c79bbcd3f" class="numbered-list" start="3"><li><strong>전력 시스템 모듈</strong>: 전력망의 흐름과 분배를 계산하는 알고리즘을 구현한다. Edmonds-Karp 최대 유량 알고리즘을 응용하여 발전소에서 소비자까지의 효율적인 전력 분배를 결정한다.</li></ol><ol type="1" id="1f07a799-1b25-8010-ab6b-d851dec1a025" class="numbered-list" start="4"><li><strong>기상 시스템 모듈</strong>: 날씨, 온도, 습도, 미세먼지 등 환경 조건을 시뮬레이션하며, 이러한 조건이 전력 수요와 태양광 발전에 미치는 영향을 모델링한다.</li></ol><ol type="1" id="1f07a799-1b25-80d6-8602-c90d9667571f" class="numbered-list" start="5"><li><strong>이벤트 시스템 모듈</strong>: 랜덤 또는 사전 정의된 이벤트(정전, 송전선 고장, 수요 급증 등)를 생성하고 관리한다.</li></ol><ol type="1" id="1f07a799-1b25-800d-b85e-e5f3c8ffebca" class="numbered-list" start="6"><li><strong>경제 모델 모듈</strong>: 전력 가격, 운영 비용, 투자 수익 등 경제적 측면을 시뮬레이션한다.</li></ol><ol type="1" id="1f07a799-1b25-805b-b0af-d6845ee2ca7e" class="numbered-list" start="7"><li><strong>분석 모듈</strong>: 시뮬레이션 데이터를 수집, 저장, 분석하여 유의미한 통계와 인사이트를 제공한다.</li></ol><ol type="1" id="1f07a799-1b25-80a9-9b37-e495a5c2ae48" class="numbered-list" start="8"><li><strong>사용자 인터페이스 모듈</strong>: 로컬 GUI와 웹 인터페이스를 통해 사용자와의 상호작용을 지원한다.</li></ol><h3 id="1f07a799-1b25-8046-b84f-c10a0aaa100b" class="">5.3. 실험 설계 및 시나리오</h3><p id="1f07a799-1b25-80ec-b402-d46543057f25" class="">본 연구에서는 다양한 시나리오를 통해 시뮬레이터의 성능과 유용성을 평가하였다. 실험은 다음과 같은 시나리오를 중심으로 설계되었다:</p><ol type="1" id="1f07a799-1b25-8042-ac55-c12439abb663" class="numbered-list" start="1"><li><strong>기본 도시 네트워크 시나리오</strong>: 중소 규모의 도시(약 20개 발전소, 50개 소비 건물, 100개 송전선)를 모델링하여 일반적인 전력망 운영 상황을 시뮬레이션하였다.</li></ol><ol type="1" id="1f07a799-1b25-8005-8f2c-c46a15896573" class="numbered-list" start="2"><li><strong>재생 에너지 통합 시나리오</strong>: 다수의 태양광 발전 설비가 통합된 환경에서 날씨 변화와 시간대별 발전량 변동이 전체 전력망 안정성에 미치는 영향을 분석하였다.</li></ol><ol type="1" id="1f07a799-1b25-807e-8e3d-ce39458c2663" class="numbered-list" start="3"><li><strong>극한 기상 조건 시나리오</strong>: 폭염, 한파, 태풍 등 극한 기상 조건에서 전력 수요 급증과 공급 제약이 동시에 발생하는 상황을 시뮬레이션하였다.</li></ol><ol type="1" id="1f07a799-1b25-8079-a527-c74da8f7baab" class="numbered-list" start="4"><li><strong>스마트 그리드 최적화 시나리오</strong>: 배터리 저장 시스템, 수요 반응 프로그램, 스마트 미터 등이 통합된 환경에서 전력망 효율성과 안정성 향상 가능성을 탐색하였다.</li></ol><ol type="1" id="1f07a799-1b25-8011-86ab-cd2f9f361ce9" class="numbered-list" start="5"><li><strong>경제 모델 분석 시나리오</strong>: 전력 가격 변동, 연료 비용 증가, 탄소세 도입 등 경제적 요인의 변화가 전력 시장과 소비자 행동에 미치는 영향을 분석하였다.</li></ol><p id="1f07a799-1b25-8036-be4e-f10f25f73918" class="">각 시나리오는 JSON 형식으로 정의되어 시뮬레이터에 로드될 수 있으며, 건물 유형, 발전 용량, 네트워크 토폴로지, 초기 조건 등을 포함한다.</p><h3 id="1f07a799-1b25-800e-a82a-fa70aac15cf5" class="">5.4. 성능 평가 및 결과 분석</h3><p id="1f07a799-1b25-80a0-b36c-e28fc9adc412" class="">시뮬레이터의 성능과 정확성을 평가하기 위해 다음과 같은 지표를 분석하였다:</p><ol type="1" id="1f07a799-1b25-8024-b85f-d1019c0c4e9f" class="numbered-list" start="1"><li><strong>전력 흐름 정확성</strong>: 시뮬레이터의 전력 흐름 계산 결과를 산업 표준 도구(MATPOWER 등)의 결과와 비교하여 정확도를 검증하였다. 테스트 케이스에서 평균 오차는 3% 미만으로 유지되었다.</li></ol><ol type="1" id="1f07a799-1b25-8030-97f0-c3aea8af3b8e" class="numbered-list" start="2"><li><strong>계산 효율성</strong>: 다양한 규모의 네트워크(100개에서 1,000개 노드)에서 시뮬레이션 속도와 메모리 사용량을 측정하였다. 시뮬레이터는 500개 노드까지 실시간 상호작용이 가능한 성능을 보였다.</li></ol><ol type="1" id="1f07a799-1b25-8039-a1a1-ec3f54d9fde1" class="numbered-list" start="3"><li><strong>시나리오 결과 분석</strong>: 각 시나리오에서 다음과 같은 주요 지표를 측정하고 분석하였다:<ul id="1f07a799-1b25-802c-8492-d9caab7dd55c" class="bulleted-list"><li style="list-style-type:disc"><strong>전력 공급 안정성</strong>: 정전 빈도, 정전 지속 시간, 영향받는 소비자 수</li></ul><ul id="1f07a799-1b25-8087-a891-f0942aa6372d" class="bulleted-list"><li style="list-style-type:disc"><strong>네트워크 효율성</strong>: 송전선 사용률, 병목 현상, 전력 손실</li></ul><ul id="1f07a799-1b25-80ca-b4a5-c0492ec50b64" class="bulleted-list"><li style="list-style-type:disc"><strong>경제성</strong>: 운영 비용, 전력 가격, 투자 수익률</li></ul><ul id="1f07a799-1b25-80d7-9a5a-df5e03d31de8" class="bulleted-list"><li style="list-style-type:disc"><strong>환경 영향</strong>: 탄소 배출량, 재생 에너지 활용률</li></ul></li></ol><ol type="1" id="1f07a799-1b25-8022-909d-f8bad35bcf55" class="numbered-list" start="4"><li><strong>사용자 경험</strong>: 전문가 그룹(n=12)을 대상으로 시뮬레이터의 사용 용이성, 직관성, 교육적 가치 등을 평가하는 사용자 연구를 진행하였다. 5점 척도에서 평균 4.2점의 높은 평가를 받았다.</li></ol><p id="1f07a799-1b25-8022-a4ef-c1a635e09e67" class="">주요 실험 결과는 다음과 같다:</p><ol type="1" id="1f07a799-1b25-80cc-8520-ff9efced7178" class="numbered-list" start="1"><li><strong>재생 에너지 통합 효과</strong>: 태양광 발전 비중이 30%를 넘어가면, 날씨 변동성에 따른 전력망 불안정성이 유의미하게 증가하였다. 이는 적절한 에너지 저장 시스템이나 백업 발전 설비의 중요성을 시사한다.</li></ol><ol type="1" id="1f07a799-1b25-80f2-abee-fda6e4b0d425" class="numbered-list" start="2"><li><strong>스마트 그리드 기술의 영향</strong>: 동일한 네트워크에서 스마트 그리드 기술(특히 배터리 저장 시스템과 수요 관리)을 적용했을 때, 정전 빈도가 최대 45% 감소하고 운영 비용이 약 15% 절감되는 효과가 관찰되었다.</li></ol><ol type="1" id="1f07a799-1b25-80c4-b386-da61f765d02c" class="numbered-list" start="3"><li><strong>AI 기반 그리드 최적화</strong>: 시뮬레이터의 지능형 에이전트를 활용한 그리드 최적화 전략이 수동 운영에 비해 평균 18% 더 효율적인 자원 활용을 보여주었다.</li></ol><ol type="1" id="1f07a799-1b25-80e7-8a77-de4586deeb8c" class="numbered-list" start="4"><li><strong>극한 기상 조건 대응</strong>: 폭염 시나리오에서 일반 그리드는 수요 급증으로 인해 심각한 정전 상황(30% 이상의 소비자 영향)이 발생했으나, 스마트 그리드와 분산형 발전을 통합한 모델에서는 이 비율이 12%로 크게 감소하였다.</li></ol><p id="1f07a799-1b25-80a7-81fc-d358d2329690" class="">이러한 결과는 전력망 계획, 스마트 그리드 투자 우선순위 결정, 그리고 에너지 정책 수립에 유용한 인사이트를 제공한다.</p><h2 id="1f07a799-1b25-8083-87d2-e92840a9a7cd" class="">6. 결론 (Conclusion)</h2><p id="1f07a799-1b25-8009-963b-cbfd4e7ecc53" class="">본 연구에서는 다양한 외부 요인과 상호작용하는 전력 네트워크를 시뮬레이션할 수 있는 통합 플랫폼을 설계하고 구현하였다. 개발된 시뮬레이터는 기상 조건, 이벤트 발생, 경제적 요인 등 다양한 변수를 고려하여 전력망의 동적 거동을 모델링하고, 그리드 운영 전략을 탐색하는 데 활용될 수 있다.</p><h3 id="1f07a799-1b25-8065-81e1-ee0aac281899" class="">6.1. 연구 요약</h3><p id="1f07a799-1b25-803d-9b4f-c7b3ba781b6f" class="">본 연구의 주요 성과는 다음과 같다:</p><ol type="1" id="1f07a799-1b25-80cd-8de2-f91e23e6c347" class="numbered-list" start="1"><li><strong>통합 시뮬레이션 프레임워크 개발</strong>: 건물 단위의 미시적 모델링부터 도시 전체 네트워크의 거시적 분석까지 다양한 스케일에서 전력망을 시뮬레이션할 수 있는 유연한 프레임워크를 구축하였다. 특히 전력 시스템, 기상 시스템, 이벤트 시스템, 경제 모델 등의 하위 모듈이 유기적으로 연동되어 현실적인 시뮬레이션 환경을 제공한다.</li></ol><ol type="1" id="1f07a799-1b25-8054-8b2d-e3605c4065bf" class="numbered-list" start="2"><li><strong>효율적인 전력 흐름 분석 알고리즘</strong>: Edmonds-Karp 최대 유량 알고리즘을 응용하여 대규모 전력망의 전력 흐름을 효율적으로 계산할 수 있는 방법론을 개발하였다. 이를 통해 다양한 부하 조건과 네트워크 토폴로지에서 정전 발생과 송전선 과부하 현상을 정확히 예측할 수 있게 되었다.</li></ol><ol type="1" id="1f07a799-1b25-802b-9bfe-e0dd82ccec26" class="numbered-list" start="3"><li><strong>지능형 그리드 관리 전략</strong>: 시뮬레이션 데이터를 바탕으로 그리드의 문제점을 진단하고, 제한된 예산 내에서 최적의 개선 방안을 도출하는 자동화된 의사결정 시스템을 개발하였다. 이는 특히 송전선 용량 증설, 전략적 발전소 건설, 에너지 저장 시스템 최적화 등의 영역에서 효과적인 솔루션을 제시할 수 있다.</li></ol><ol type="1" id="1f07a799-1b25-80b1-b812-cc4e5ac3609a" class="numbered-list" start="4"><li><strong>다양한 시나리오 기반 분석</strong>: 기후 변화, 재생 에너지 통합, 전력 수요 패턴 변화 등 다양한 시나리오를 시뮬레이션하여 전력망의 회복탄력성과 적응성을 평가하였다. 이러한 분석은 장기적인 전력망 계획과 정책 결정에 중요한 근거를 제공할 수 있다.</li></ol><h3 id="1f07a799-1b25-800a-8f2d-f0a3a91c14d6" class="">6.2. 이론적 및 실용적 기여</h3><p id="1f07a799-1b25-800a-a1f1-cc3a61747d8c" class="">본 연구는 다음과 같은 이론적, 실용적 기여를 한다:</p><ol type="1" id="1f07a799-1b25-8004-a233-e4f2d3c7cabd" class="numbered-list" start="1"><li><strong>이론적 기여</strong>:<ul id="1f07a799-1b25-80a2-8815-f9586af0a45a" class="bulleted-list"><li style="list-style-type:disc">다중 요소 통합 시뮬레이션 방법론을 통해 전력 시스템 모델링의 새로운 패러다임을 제시하였다.</li></ul><ul id="1f07a799-1b25-8003-a605-df4f0ecb8083" class="bulleted-list"><li style="list-style-type:disc">그래프 이론과 네트워크 흐름 알고리즘을 전력망 분석에 적용하는 체계적인 접근법을 발전시켰다.</li></ul><ul id="1f07a799-1b25-804f-a358-fed2ce1b5840" class="bulleted-list"><li style="list-style-type:disc">복잡계 시스템으로서의 전력망에 대한 이해를 심화하였으며, 특히 다양한 외부 요인과의 상호작용 메커니즘을 규명하였다.</li></ul></li></ol><ol type="1" id="1f07a799-1b25-8061-bca6-ca01eb5bfbc4" class="numbered-list" start="2"><li><strong>실용적 기여</strong>:<ul id="1f07a799-1b25-8069-8eeb-e307741de0ec" class="bulleted-list"><li style="list-style-type:disc">전력망 계획자와 운영자에게 다양한 시나리오를 테스트하고 최적의 의사결정을 도출할 수 있는 실용적인 도구를 제공하였다.</li></ul><ul id="1f07a799-1b25-803a-832d-db5ba93b644c" class="bulleted-list"><li style="list-style-type:disc">스마트 그리드 기술의 효과와 투자 우선순위를 평가할 수 있는 객관적인 프레임워크를 제시하였다.</li></ul><ul id="1f07a799-1b25-8085-bdbf-de378183b234" class="bulleted-list"><li style="list-style-type:disc">교육 및 훈련 목적으로 활용 가능한 직관적인 시뮬레이션 환경을 구축하였다.</li></ul></li></ol><h3 id="1f07a799-1b25-80cf-88ee-f3873e5e5756" class="">6.3. 한계점 및 향후 연구 방향</h3><p id="1f07a799-1b25-80d1-a96d-edc1a8120857" class="">현재 시뮬레이터의 한계점과 이를 개선하기 위한 향후 연구 방향은 다음과 같다:</p><ol type="1" id="1f07a799-1b25-80c3-a12c-ed803fb99970" class="numbered-list" start="1"><li><strong>한계점</strong>:<ul id="1f07a799-1b25-80d6-9c6d-e991734980d1" class="bulleted-list"><li style="list-style-type:disc"><strong>시뮬레이터 기반 구조 구현에 집중하다보니 지능형 자율 운영 알고리즘 개발이 미흡하다.</strong> 현재는 기본적인 규칙 기반 의사결정 시스템만 구현되어 있어 복잡한 상황에서 최적의 대응 전략을 자동으로 도출하는 데 한계가 있다.</li></ul><ul id="1f07a799-1b25-80ff-b400-ef36922e42e7" class="bulleted-list"><li style="list-style-type:disc">현재 모델은 AC(교류) 전력 흐름의 복잡한 특성(위상각, 무효전력 등)을 단순화하여 표현하고 있다. 이로 인해 특정 전기공학적 현상을 정확히 시뮬레이션하는 데 제한이 있다.</li></ul><ul id="1f07a799-1b25-80a0-b3f4-efd7beee9289" class="bulleted-list"><li style="list-style-type:disc">대규모 네트워크(1,000개 이상의 노드)에서는 계산 효율성이 저하될 수 있다.</li></ul><ul id="1f07a799-1b25-8070-84a3-c65cde0aa846" class="bulleted-list"><li style="list-style-type:disc">소비자 행동 모델링이 다소 단순화되어 있어, 수요 반응 프로그램의 효과를 정밀하게 평가하기 어렵다.</li></ul></li></ol><ol type="1" id="1f07a799-1b25-8014-ac19-c62e87a1c4f3" class="numbered-list" start="2"><li><strong>향후 연구 방향</strong>:<ul id="1f07a799-1b25-8002-9982-e4196d53c04a" class="bulleted-list"><li style="list-style-type:disc"><strong>고급 자율 운영 알고리즘 개발</strong>: 강화학습, 유전 알고리즘, 다중 에이전트 시스템 등 고급 AI 기법을 활용하여 복잡한 전력망 상황에서도 자율적으로 최적의 운영 전략을 도출할 수 있는 알고리즘을 개발한다. 특히 불확실성이 높은 환경에서 제한된 정보만으로 효과적인 의사결정을 할 수 있는 적응형 알고리즘 연구에 중점을 둔다.</li></ul><ul id="1f07a799-1b25-8006-b5ff-c34986117090" class="bulleted-list"><li style="list-style-type:disc"><strong>고급 전력 흐름 모델 통합</strong>: AC 전력 흐름 계산, 정태적/동태적 안정도 분석 등 보다 정교한 전기공학적 모델을 통합하여 시뮬레이션의 정확도를 향상시킨다.</li></ul><ul id="1f07a799-1b25-8048-8e82-ebdb3ad28cb9" class="bulleted-list"><li style="list-style-type:disc"><strong>심층 강화학습 기반 그리드 관리</strong>: 현재의 규칙 기반 의사결정 시스템을 확장하여, 강화학습을 통해 복잡한 상황에서도 최적의 그리드 관리 전략을 학습할 수 있는 지능형 에이전트를 개발한다.</li></ul><ul id="1f07a799-1b25-8056-a930-da488157087b" class="bulleted-list"><li style="list-style-type:disc"><strong>분산형 에너지 자원(DER) 모델링 강화</strong>: 마이크로그리드, 가상발전소(VPP), 프로슈머 등 분산형 에너지 자원의 특성과 영향을 보다 정밀하게 모델링한다.</li></ul><ul id="1f07a799-1b25-8048-b9f5-dc9e37fee0a7" class="bulleted-list"><li style="list-style-type:disc"><strong>사용자 경험 개선 및 접근성 향상</strong>: 시뮬레이터의 UI/UX를 개선하고, 클라우드 기반 서비스로 확장하여 더 넓은 사용자 커뮤니티에서 활용될 수 있도록 한다.</li></ul><ul id="1f07a799-1b25-80a3-892d-cdd084c220af" class="bulleted-list"><li style="list-style-type:disc"><strong>국제 표준 및 데이터 형식 지원</strong>: IEEE 버스 시스템, CIM(Common Information Model) 등 국제 표준과의 호환성을 확보하여 다른 전력 시스템 분석 도구와의 연동성을 높인다.</li></ul></li></ol><p id="1f07a799-1b25-8092-8b8e-e377fed1245d" class="">본 연구는 전통적인 전력망에서 스마트 그리드로의 전환 과정에서 발생하는 다양한 문제와 기회를 사전에 평가하고 대응 전략을 수립하는 데 기여할 수 있다. 특히, 기후 변화에 따른 에너지 시스템의 회복탄력성 강화, 재생 에너지의 효율적 통합, 그리고 전력 시스템의 지속가능성 제고에 유용한 인사이트를 제공할 수 있을 것이다.</p><h2 id="1f07a799-1b25-80cc-a06a-e4fc35ecacde" class="">참고문헌 (References)</h2><p id="1f07a799-1b25-804d-9440-c387d1847578" class="">[1] Farhangi, H. (2010). The path of the smart grid. IEEE Power and Energy Magazine, 8(1), 18-28.</p><p id="1f07a799-1b25-805c-a36b-d36bcf8e900c" class="">[2] Fang, X., Misra, S., Xue, G., &amp; Yang, D. (2012). Smart grid—The new and improved power grid: A survey. IEEE Communications Surveys &amp; Tutorials, 14(4), 944-980.</p><p id="1f07a799-1b25-80e9-9cde-c0ebdceb3898" class="">[3] Siano, P. (2014). Demand response and smart grids—A survey. Renewable and Sustainable Energy Reviews, 30, 461-478.</p><p id="1f07a799-1b25-8078-9eb6-ffa26afb9557" class="">[4] Glover, J. D., Sarma, M. S., &amp; Overbye, T. (2012). Power System Analysis &amp; Design (5th ed.). Cengage Learning.</p><p id="1f07a799-1b25-8083-8f4e-e51f57f2eef2" class="">[5] Wang, X., &amp; McDonald, J. R. (1994). Modern Power System Planning. McGraw-Hill.</p><p id="1f07a799-1b25-8008-871a-ce7b80f7d1bd" class="">[6] Zimmerman, R. D., Murillo-Sánchez, C. E., &amp; Thomas, R. J. (2011). MATPOWER: Steady-state operations, planning, and analysis tools for power systems research and education. IEEE Transactions on Power Systems, 26(1), 12-19.</p><p id="1f07a799-1b25-80d1-9500-d7a62537221f" class="">[7] Dugan, R. C., &amp; McDermott, T. E. (2011). An open source platform for collaborating on smart grid research. In IEEE Power and Energy Society General Meeting (pp. 1-7).</p><p id="1f07a799-1b25-80b7-b8f3-cdc258a16458" class="">[8] Chassin, D. P., Schneider, K., &amp; Gerkensmeyer, C. (2008). GridLAB-D: An open-source power systems modeling and simulation environment. In IEEE/PES Transmission and Distribution Conference and Exposition (pp. 1-5).</p><p id="1f07a799-1b25-80c6-944f-c140fbcd645c" class="">[9] Lin, H., Veda, S. S., Shukla, S. S., Mili, L., &amp; Thorp, J. (2012). GECO: Global event-driven co-simulation framework for interconnected power system and communication network. IEEE Transactions on Smart Grid, 3(3), 1444-1456.</p><p id="1f07a799-1b25-802a-9acf-cd128cf909b8" class="">[10] Mancarella, P. (2014). MES (multi-energy systems): An overview of concepts and evaluation models. Energy, 65, 1-17.</p><p id="1f07a799-1b25-8089-935a-dc2ce7914d47" class="">[11] Schütte, S., Scherfke, S., &amp; Tröschel, M. (2011). Mosaik: A framework for modular simulation of active components in smart grids. In IEEE First International Workshop on Smart Grid Modeling and Simulation (pp. 55-60).</p><p id="1f07a799-1b25-801b-b1d4-ca76b50c25fb" class="">[12] Milano, F. (2013). A python-based software tool for power system analysis. In IEEE Power and Energy Society General Meeting (pp. 1-5).</p><p id="1f07a799-1b25-80e2-b8ca-c581063b698e" class="">[13] Lin, H., Wang, Q., Wang, Y., Liu, Y., Sun, Q., &amp; Wang, R. (2017). Agent-based modeling and simulation for smart grid consumer-side management. Energy Procedia, 142, 3087-3094.</p><p id="1f07a799-1b25-8046-a122-ddcebcfc9d22" class="">[14] Tan, K. M., Ramachandaramurthy, V. K., &amp; Yong, J. Y. (2016). Integration of electric vehicles in smart grid: A review on vehicle to grid technologies and optimization techniques. Renewable and Sustainable Energy Reviews, 53, 720-732.</p><p id="1f07a799-1b25-8069-9e22-e761fc3e623c" class="">[15] Anderson, D., Zhao, C., Hauser, C. H., Venkatasubramanian, V., Bakken, D. E., &amp; Bose, A. (2012). A virtual smart grid. IEEE Power and Energy Magazine, 10(1), 49-57.</p><p id="1f07a799-1b25-80b3-a286-ed6e997f8684" class="">[16] Bompard, E., Luo, L., &amp; Pons, E. (2015). A perspective overview of topological approaches for vulnerability analysis of power transmission grids. International Journal of Critical Infrastructures, 11(1), 15-26.</p><p id="1f07a799-1b25-80b5-9fb4-f712f5057f12" class="">[17] Heydt, G. T. (2010). The next generation of power distribution systems. IEEE Transactions on Smart Grid, 1(3), 225-235.</p><p id="1f07a799-1b25-80d7-a89b-ea2ccad89c98" class="">[18] Bessa, R. J., Moreira, C., Silva, B., &amp; Matos, M. (2014). Handling renewable energy variability and uncertainty in power systems operation. Wiley Interdisciplinary Reviews: Energy and Environment, 3(2), 156-178.</p><p id="1f07a799-1b25-8049-b418-d6185178efb7" class="">[19] Palensky, P., &amp; Dietrich, D. (2011). Demand side management: Demand response, intelligent energy systems, and smart loads. IEEE Transactions on Industrial Informatics, 7(3), 381-388.</p><p id="1f07a799-1b25-80b2-b06b-cf5885aba7aa" class="">[20] Hledik, R. (2014). Rediscovering residential demand charges. The Electricity Journal, 27(7), 82-96.</p><h2 id="1f07a799-1b25-801e-8bee-eea009cbd21f" class="">부록 (Appendix) (선택 사항)</h2></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

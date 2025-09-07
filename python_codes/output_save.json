@@ -1,0 +1,73 @@
+{
+  "buildings": [
+    {
+      "base_supply": 10,
+      "solar_capacity": 0.0,
+      "x": 200,
+      "y": 150,
+      "removed": false
+    },
+    {
+      "base_supply": -5,
+      "solar_capacity": 0.0,
+      "x": 350,
+      "y": 300,
+      "removed": false
+    },
+    {
+      "base_supply": 5.0,
+      "solar_capacity": 0.0,
+      "x": 439.3333333333333,
+      "y": 206.66666666666666,
+      "removed": true
+    },
+    {
+      "base_supply": -5.0,
+      "solar_capacity": 0.0,
+      "x": 625.2121212121212,
+      "y": 382.12121212121207,
+      "removed": true
+    },
+    {
+      "base_supply": 5.0,
+      "solar_capacity": 0.0,
+      "x": 311.87878787878793,
+      "y": 217.87878787878788,
+      "removed": true
+    },
+    {
+      "base_supply": 5.0,
+      "solar_capacity": 0.0,
+      "x": 467.03030303030306,
+      "y": 191.2121212121212,
+      "removed": true
+    }
+  ],
+  "lines": [
+    {
+      "u": 0,
+      "v": 1,
+      "capacity": 10,
+      "cost": 1.5,
+      "removed": false
+    },
+    {
+      "u": 1,
+      "v": 2,
+      "capacity": 5.0,
+      "cost": 1.0,
+      "removed": true
+    },
+    {
+      "u": 1,
+      "v": 5,
+      "capacity": 5.0,
+      "cost": 1.0,
+      "removed": false
+    }
+  ],
+  "budget": 40.0,
+  "money": 80.0,
+  "event_count": 0,
+  "simTime": "2025-04-13T13:40:00"
+}

@@ -1,0 +1,72 @@
+
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>전력 네트워크 시뮬레이터</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>전력 네트워크 시뮬레이터</h1>
+                <div class="controls">
+                    <button id="start-btn">시작</button>
+                    <button id="pause-btn">일시정지</button>
+                    <select id="speed-selector">
+                        <option value="0.5">0.5x 속도</option>
+                        <option value="1" selected>1x 속도</option>
+                        <option value="2">2x 속도</option>
+                        <option value="5">5x 속도</option>
+                        <option value="10">10x 속도</option>
+                    </select>
+                </div>
+            </header>
+            
+            <main>
+                <div class="dashboard">
+                    <div class="status-card">
+                        <h2>시뮬레이션 상태</h2>
+                        <p>시간: <span id="sim-time">-</span></p>
+                        <p>날씨: <span id="weather">-</span></p>
+                        <p>온도: <span id="temperature">-</span>°C</p>
+                        <p>이벤트 수: <span id="event-count">-</span></p>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h2>전력 네트워크</h2>
+                        <p>수요: <span id="demand">-</span></p>
+                        <p>공급: <span id="supply">-</span></p>
+                        <p>유량: <span id="flow">-</span></p>
+                        <p>정전 건물: <span id="blackout-count">-</span></p>
+                    </div>
+                    
+                    <div class="status-card">
+                        <h2>경제 지표</h2>
+                        <p>예산: <span id="budget">-</span></p>
+                        <p>자금: <span id="money">-</span></p>
+                        <p>전기 가격: <span id="electricity-price">-</span></p>
+                    </div>
+                </div>
+                
+                <div class="network-view">
+                    <h2>네트워크 시각화</h2>
+                    <div id="network-container">
+                        <canvas id="network-canvas" width="800" height="600"></canvas>
+                    </div>
+                </div>
+                
+                <div class="scenario-selector">
+                    <h2>시나리오</h2>
+                    <select id="scenario-list"></select>
+                    <button id="load-scenario-btn">시나리오 로드</button>
+                </div>
+            </main>
+        </div>
+        
+        <script src="{{ url_for('static', filename='app.js') }}"></script>
+    </body>
+    </html>
+    

@@ -1,0 +1,664 @@
+{
+  "scenarios": [
+    {
+      "name": "Scenario1",
+      "desc": "중소형 도시, prosumer 포함 예시",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.6,0.5,0.4,0.4,0.5,0.7,1.0,1.2,1.2,1.2,1.2,1.1,1.0,1.0,1.1,1.2,1.3,1.5,1.5,1.3,1.1,1.0,0.8,0.6],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.0,1.1,1.3],
+        "seasonal_pattern": [0.9,0.9,1.0,1.0,1.1,1.2,1.3,1.3,1.4,1.1,0.9,0.8],
+        "holiday_list": [
+          {"month":1, "day":1}
+        ],
+        "holiday_factor": 1.3
+      },
+      "budget": 40.0,
+      "money": 80.0,
+      "buildings": [
+        {"base_supply": 60, "x": 200, "y": 150, "building_type": "producer"},
+        {"base_supply": -5, "x": 350, "y": 300, "building_type": "consumer"}
+      ],
+      "lines": [
+        {"u":0, "v":1, "capacity": 10, "cost": 1.5}
+      ]
+    },
+
+    {
+      "name": "Scenario2",
+      "desc": "주말 가중치가 조금 높은 예시, 노드 12개",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.5,0.4,0.3,0.3,0.4,0.7,0.9,1.0,1.2,1.3,1.3,1.2,1.1,1.0,1.0,1.1,1.2,1.4,1.5,1.4,1.2,1.0,0.8,0.6],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.0,1.1,1.2],
+        "seasonal_pattern": [0.8,0.85,0.9,1.0,1.1,1.2,1.4,1.5,1.3,1.0,0.9,0.8],
+        "holiday_list": [
+          {"month":1, "day":1},
+          {"month":12,"day":25}
+        ],
+        "holiday_factor": 1.2
+      },
+      "budget": 50.0,
+      "money": 100.0,
+      "buildings": [
+        {"base_supply": 15, "x": 150, "y": 200, "building_type": "producer"},
+        {"base_supply": -6, "x": 300, "y": 220, "building_type": "consumer"},
+        {"base_supply": 0,  "x": 380, "y": 300, "building_type": "neutral"},
+        {"base_supply": 5,  "x": 450, "y": 300, "building_type": "prosumer"},
+        {"base_supply": -8, "x": 520, "y": 400, "building_type": "consumer"},
+        {"base_supply": 10, "x": 200, "y": 350, "building_type": "producer"},
+        {"base_supply": 0,  "x": 600, "y": 220, "building_type": "neutral"},
+        {"base_supply": -4, "x": 500, "y": 180, "building_type": "consumer"},
+        {"base_supply": 6,  "x": 120, "y": 450, "building_type": "producer"},
+        {"base_supply": 5,  "x": 320, "y": 450, "building_type": "prosumer"},
+        {"base_supply": 0,  "x": 400, "y": 120, "building_type": "neutral"},
+        {"base_supply": -3, "x": 700, "y": 320, "building_type": "consumer"}
+      ],
+      "lines": [
+        {"u":0, "v":1,  "capacity": 10, "cost": 1.5},
+        {"u":1, "v":2,  "capacity": 6,  "cost": 1.2},
+        {"u":2, "v":3,  "capacity": 5,  "cost": 1.1},
+        {"u":3, "v":4,  "capacity": 5,  "cost": 1.2},
+        {"u":0, "v":5,  "capacity": 8,  "cost": 1.5},
+        {"u":5, "v":7,  "capacity": 4,  "cost": 1.0},
+        {"u":4, "v":9,  "capacity": 4,  "cost": 1.3},
+        {"u":6, "v":7,  "capacity": 6,  "cost": 1.1},
+        {"u":2, "v":8,  "capacity": 6,  "cost": 1.2},
+        {"u":8, "v":9,  "capacity": 5,  "cost": 1.0},
+        {"u":5, "v":10, "capacity": 5,  "cost": 1.3},
+        {"u":1, "v":11, "capacity": 7,  "cost": 1.4}
+      ]
+    },
+
+    {
+      "name": "RenewableEnergyScenario",
+      "desc": "재생에너지 발전소 시나리오 - 풍력, 태양광, 수력, 수소저장",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.5,0.4,0.3,0.3,0.4,0.6,0.8,1.0,1.2,1.3,1.3,1.2,1.1,1.0,1.0,1.1,1.2,1.4,1.5,1.3,1.1,0.9,0.7,0.5],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.0,1.1,1.2],
+        "seasonal_pattern": [0.9,0.9,1.0,1.0,1.1,1.2,1.3,1.3,1.2,1.0,0.9,0.85],
+        "holiday_list": [
+          {"month":1, "day":1},
+          {"month":8, "day":15}
+        ],
+        "holiday_factor": 1.25
+      },
+      "budget": 100.0,
+      "money": 200.0,
+      "buildings": [
+        {"base_supply": 0, "x": 150, "y": 150, "building_type": "wind", "wind_capacity": 100, "power_plant_type": "wind"},
+        {"base_supply": 0, "x": 300, "y": 150, "building_type": "solar", "solar_capacity": 80, "power_plant_type": "solar"},
+        {"base_supply": 0, "x": 450, "y": 150, "building_type": "hydro", "hydro_capacity": 150, "power_plant_type": "hydro"},
+        {"base_supply": 0, "x": 600, "y": 150, "building_type": "hydrogen", "hydrogen_storage": 1000, "power_plant_type": "hydrogen"},
+        
+        {"base_supply": -20, "x": 200, "y": 300, "building_type": "consumer"},
+        {"base_supply": -15, "x": 350, "y": 300, "building_type": "consumer"},
+        {"base_supply": -10, "x": 500, "y": 300, "building_type": "consumer"},
+        {"base_supply": -8, "x": 200, "y": 450, "building_type": "consumer"},
+        {"base_supply": -12, "x": 350, "y": 450, "building_type": "consumer"},
+        {"base_supply": -5, "x": 500, "y": 450, "building_type": "consumer"},
+        
+        {"base_supply": 0, "x": 375, "y": 225, "building_type": "neutral"},
+        {"base_supply": 0, "x": 375, "y": 375, "building_type": "neutral"}
+      ],
+      "lines": [
+        {"u":0, "v":4, "capacity": 30, "cost": 2.0},
+        {"u":1, "v":5, "capacity": 25, "cost": 2.0},
+        {"u":2, "v":6, "capacity": 35, "cost": 2.0},
+        {"u":3, "v":10, "capacity": 20, "cost": 1.5},
+        {"u":4, "v":10, "capacity": 15, "cost": 1.0},
+        {"u":5, "v":10, "capacity": 15, "cost": 1.0},
+        {"u":6, "v":10, "capacity": 15, "cost": 1.0},
+        {"u":10, "v":11, "capacity": 25, "cost": 1.2},
+        {"u":11, "v":7, "capacity": 10, "cost": 1.0},
+        {"u":11, "v":8, "capacity": 15, "cost": 1.0},
+        {"u":11, "v":9, "capacity": 10, "cost": 1.0},
+        {"u":0, "v":1, "capacity": 20, "cost": 1.5},
+        {"u":1, "v":2, "capacity": 20, "cost": 1.5},
+        {"u":2, "v":3, "capacity": 20, "cost": 1.5}
+      ]
+    },
+
+    {
+      "name": "Scenario3",
+      "desc": "대형 발전소 2개, prosumer 다수, 노드 14개",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.4,0.4,0.3,0.3,0.4,0.6,0.9,1.0,1.1,1.2,1.3,1.3,1.1,1.0,1.0,1.2,1.3,1.4,1.4,1.3,1.1,0.9,0.7,0.5],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.1,1.2,1.2],
+        "seasonal_pattern": [0.8,0.85,0.9,1.0,1.0,1.1,1.2,1.4,1.3,1.2,0.9,0.8],
+        "holiday_list": [
+          {"month":3, "day":1}
+        ],
+        "holiday_factor": 1.4
+      },
+      "budget": 60.0,
+      "money": 120.0,
+      "buildings": [
+        {"base_supply": 20, "x": 100, "y": 150, "building_type": "producer"},
+        {"base_supply": 15, "x": 150, "y": 300, "building_type": "producer"},
+        {"base_supply": 0,  "x": 300, "y": 300, "building_type": "neutral"},
+        {"base_supply": 5,  "x": 400, "y": 200, "building_type": "prosumer"},
+        {"base_supply": -8, "x": 500, "y": 250, "building_type": "consumer"},
+        {"base_supply": -6, "x": 600, "y": 370, "building_type": "consumer"},
+        {"base_supply": -4, "x": 540, "y": 470, "building_type": "consumer"},
+        {"base_supply": 0,  "x": 400, "y": 420, "building_type": "neutral"},
+        {"base_supply": 10, "x": 280, "y": 450, "building_type": "producer"},
+        {"base_supply": -3, "x": 700, "y": 320, "building_type": "consumer"},
+        {"base_supply": 5,  "x": 620, "y": 180, "building_type": "prosumer"},
+        {"base_supply": 0,  "x": 720, "y": 420, "building_type": "neutral"},
+        {"base_supply": -4, "x": 660, "y": 480, "building_type": "consumer"},
+        {"base_supply": 2,  "x": 300, "y": 180, "building_type": "prosumer"}
+      ],
+      "lines": [
+        {"u":0, "v":1,  "capacity": 10, "cost": 1.2},
+        {"u":1, "v":2,  "capacity": 8,  "cost": 1.3},
+        {"u":2, "v":3,  "capacity": 6,  "cost": 1.1},
+        {"u":3, "v":4,  "capacity": 5,  "cost": 1.0},
+        {"u":1, "v":5,  "capacity": 8,  "cost": 1.3},
+        {"u":5, "v":6,  "capacity": 4,  "cost": 1.2},
+        {"u":2, "v":7,  "capacity": 5,  "cost": 1.1},
+        {"u":0, "v":8,  "capacity": 7,  "cost": 1.5},
+        {"u":4, "v":9,  "capacity": 5,  "cost": 1.2},
+        {"u":3, "v":10, "capacity": 6,  "cost": 1.3},
+        {"u":5, "v":11, "capacity": 5,  "cost": 1.2},
+        {"u":8, "v":7,  "capacity": 4,  "cost": 1.1},
+        {"u":10,"v":12, "capacity": 6,  "cost": 1.2},
+        {"u":3, "v":13, "capacity": 4,  "cost": 1.0}
+      ]
+    },
+
+    {
+      "name": "Scenario4",
+      "desc": "다양한 건물 유형과 복잡한 송전망 테스트",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.7,0.6,0.5,0.4,0.4,0.6,1.0,1.1,1.2,1.2,1.1,1.0,1.0,1.0,1.1,1.2,1.3,1.5,1.5,1.3,1.2,1.0,0.8,0.6],
+        "weekly_pattern": [1.0,1.0,1.0,1.1,1.1,1.2,1.2],
+        "seasonal_pattern": [0.9,0.95,1.0,1.05,1.1,1.2,1.3,1.4,1.3,1.1,1.0,0.9],
+        "holiday_list": [{"month":5,"day":5},{"month":12,"day":25}],
+        "holiday_factor":1.3
+      },
+      "budget": 60.0,
+      "money": 120.0,
+      "buildings": [
+        {"base_supply": 10, "x": 100, "y": 200, "building_type": "producer"},
+        {"base_supply": -4, "x": 500, "y": 220, "building_type": "consumer"},
+        {"base_supply": -6, "x": 400, "y": 400, "building_type": "consumer"},
+        {"base_supply": -8, "x": 700, "y": 370, "building_type": "consumer"},
+        {"base_supply": 15, "x": 650, "y": 120, "building_type": "producer"},
+        {"base_supply": 0,  "x": 300, "y": 300, "building_type": "neutral"},
+        {"base_supply": 5,  "x": 370, "y": 420, "building_type": "prosumer"},
+        {"base_supply": 0,  "x": 150, "y": 420, "building_type": "neutral"},
+        {"base_supply": -5, "x": 220, "y": 400, "building_type": "consumer"},
+        {"base_supply": 8,  "x": 720, "y": 200, "building_type": "producer"},
+        {"base_supply": -3, "x": 560, "y": 320, "building_type": "consumer"},
+        {"base_supply": 5,  "x": 600, "y": 420, "building_type": "prosumer"}
+      ],
+      "lines": [
+        {"u":0,"v":1,"capacity":5,"cost":1.0},
+        {"u":1,"v":2,"capacity":4,"cost":1.2},
+        {"u":2,"v":3,"capacity":6,"cost":1.3},
+        {"u":0,"v":2,"capacity":8,"cost":1.1},
+        {"u":1,"v":4,"capacity":7,"cost":1.4},
+        {"u":4,"v":5,"capacity":5,"cost":1.0},
+        {"u":3,"v":6,"capacity":4,"cost":1.2},
+        {"u":5,"v":7,"capacity":4,"cost":1.1},
+        {"u":7,"v":8,"capacity":6,"cost":1.2},
+        {"u":4,"v":9,"capacity":7,"cost":1.2},
+        {"u":2,"v":10,"capacity":5,"cost":1.3},
+        {"u":3,"v":11,"capacity":4,"cost":1.2}
+      ]
+    },
+
+    {
+      "name": "Scenario5",
+      "desc": "프로슈머와 중립 건물이 많은 에너지 자립형 도시 모델",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.3,0.3,0.3,0.3,0.4,0.6,0.9,1.0,1.1,1.2,1.3,1.3,1.1,1.0,1.0,1.1,1.2,1.3,1.5,1.5,1.3,1.0,0.7,0.5],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.1,1.2,1.3],
+        "seasonal_pattern": [0.8,0.9,0.9,1.0,1.1,1.3,1.4,1.5,1.5,1.0,0.9,0.8],
+        "holiday_list": [{"month":8,"day":15}],
+        "holiday_factor":1.5
+      },
+      "budget": 30.0,
+      "money": 70.0,
+      "buildings": [
+        {"base_supply":8,"x":250,"y":200,"building_type":"producer"},
+        {"base_supply":0,"x":300,"y":400,"building_type":"neutral"},
+        {"base_supply":-6,"x":600,"y":220,"building_type":"consumer"},
+        {"base_supply":5,"x":700,"y":370,"building_type":"prosumer"},
+        {"base_supply":-10,"x":500,"y":500,"building_type":"consumer"},
+        {"base_supply":0,"x":350,"y":500,"building_type":"neutral"},
+        {"base_supply":-4,"x":420,"y":520,"building_type":"consumer"},
+        {"base_supply":10,"x":200,"y":450,"building_type":"producer"},
+        {"base_supply":5,"x":350,"y":200,"building_type":"prosumer"},
+        {"base_supply":-3,"x":420,"y":220,"building_type":"consumer"},
+        {"base_supply":0,"x":620,"y":180,"building_type":"neutral"},
+        {"base_supply":8,"x":520,"y":150,"building_type":"producer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":5,"cost":1.0},
+        {"u":1,"v":2,"capacity":6,"cost":1.1},
+        {"u":2,"v":3,"capacity":6,"cost":1.3},
+        {"u":3,"v":4,"capacity":4,"cost":1.2},
+        {"u":0,"v":4,"capacity":8,"cost":1.5},
+        {"u":5,"v":6,"capacity":4,"cost":1.0},
+        {"u":1,"v":7,"capacity":5,"cost":1.2},
+        {"u":2,"v":8,"capacity":4,"cost":1.2},
+        {"u":8,"v":9,"capacity":5,"cost":1.1},
+        {"u":1,"v":10,"capacity":4,"cost":1.3},
+        {"u":0,"v":11,"capacity":6,"cost":1.4}
+      ]
+    },
+
+    {
+      "name": "Scenario6",
+      "desc": "높은 예산으로 시작하는 대규모 전력망 구축 시나리오",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.6,0.5,0.5,0.4,0.4,0.6,0.9,1.1,1.2,1.2,1.2,1.1,1.0,1.0,1.0,1.2,1.3,1.5,1.6,1.4,1.2,1.1,0.8,0.6],
+        "weekly_pattern":[1.0,1.0,1.1,1.1,1.2,1.2,1.3],
+        "seasonal_pattern":[0.9,1.0,1.0,1.05,1.1,1.2,1.3,1.4,1.4,1.1,1.0,0.9],
+        "holiday_list":[{"month":1,"day":1},{"month":9,"day":13}],
+        "holiday_factor":1.4
+      },
+      "budget":80.0,
+      "money":150.0,
+      "buildings":[
+        {"base_supply":20,"x":200,"y":150,"building_type":"producer"},
+        {"base_supply":-5,"x":350,"y":300,"building_type":"consumer"},
+        {"base_supply":-7,"x":500,"y":350,"building_type":"consumer"},
+        {"base_supply":-4,"x":600,"y":400,"building_type":"consumer"},
+        {"base_supply":0,"x":400,"y":200,"building_type":"neutral"},
+        {"base_supply":10,"x":250,"y":420,"building_type":"producer"},
+        {"base_supply":5,"x":450,"y":500,"building_type":"prosumer"},
+        {"base_supply":-3,"x":380,"y":540,"building_type":"consumer"},
+        {"base_supply":2,"x":580,"y":260,"building_type":"prosumer"},
+        {"base_supply":0,"x":320,"y":180,"building_type":"neutral"},
+        {"base_supply":-6,"x":220,"y":500,"building_type":"consumer"},
+        {"base_supply":8,"x":700,"y":200,"building_type":"producer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":10,"cost":1.0},
+        {"u":1,"v":2,"capacity":6,"cost":1.2},
+        {"u":2,"v":3,"capacity":5,"cost":1.2},
+        {"u":0,"v":4,"capacity":8,"cost":1.1},
+        {"u":4,"v":1,"capacity":4,"cost":1.0},
+        {"u":0,"v":5,"capacity":6,"cost":1.3},
+        {"u":3,"v":6,"capacity":4,"cost":1.1},
+        {"u":6,"v":7,"capacity":3,"cost":1.0},
+        {"u":2,"v":8,"capacity":5,"cost":1.2},
+        {"u":9,"v":1,"capacity":4,"cost":1.1},
+        {"u":5,"v":10,"capacity":5,"cost":1.2},
+        {"u":3,"v":11,"capacity":7,"cost":1.4}
+      ]
+    },
+
+    {
+      "name": "Scenario7",
+      "desc": "...",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern":[0.5,0.4,0.3,0.3,0.4,0.7,0.9,1.1,1.1,1.1,1.2,1.2,1.0,1.0,1.1,1.2,1.3,1.4,1.5,1.3,1.2,1.0,0.8,0.6],
+        "weekly_pattern":[1.0,1.0,1.0,1.0,1.1,1.1,1.3],
+        "seasonal_pattern":[0.8,0.85,1.0,1.0,1.1,1.2,1.2,1.4,1.3,1.0,0.8,0.8],
+        "holiday_list":[{"month":5,"day":8},{"month":10,"day":9}],
+        "holiday_factor":1.2
+      },
+      "budget":20.0,
+      "money":60.0,
+      "buildings":[
+        {"base_supply":6,"x":250,"y":150,"building_type":"producer"},
+        {"base_supply":0,"x":300,"y":300,"building_type":"neutral"},
+        {"base_supply":-4,"x":450,"y":350,"building_type":"consumer"},
+        {"base_supply":-4,"x":600,"y":420,"building_type":"consumer"},
+        {"base_supply":-8,"x":650,"y":400,"building_type":"consumer"},
+        {"base_supply":10,"x":700,"y":200,"building_type":"producer"},
+        {"base_supply":5,"x":500,"y":200,"building_type":"prosumer"},
+        {"base_supply":-3,"x":420,"y":220,"building_type":"consumer"},
+        {"base_supply":0,"x":350,"y":450,"building_type":"neutral"},
+        {"base_supply":5,"x":220,"y":350,"building_type":"prosumer"},
+        {"base_supply":-6,"x":540,"y":540,"building_type":"consumer"},
+        {"base_supply":8,"x":380,"y":180,"building_type":"producer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":5,"cost":1.0},
+        {"u":1,"v":2,"capacity":4,"cost":1.2},
+        {"u":2,"v":3,"capacity":6,"cost":1.2},
+        {"u":3,"v":4,"capacity":5,"cost":1.3},
+        {"u":0,"v":5,"capacity":10,"cost":1.5},
+        {"u":4,"v":5,"capacity":7,"cost":1.5},
+        {"u":1,"v":6,"capacity":4,"cost":1.2},
+        {"u":6,"v":7,"capacity":3,"cost":1.1},
+        {"u":2,"v":8,"capacity":4,"cost":1.2},
+        {"u":0,"v":9,"capacity":6,"cost":1.3},
+        {"u":3,"v":10,"capacity":4,"cost":1.3},
+        {"u":5,"v":11,"capacity":5,"cost":1.4}
+      ]
+    },
+
+    {
+      "name": "Scenario8",
+      "desc": "발전소 2개, 수요 매우 큼, 휴일 가중치 높음",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern":[0.3,0.3,0.3,0.4,0.5,0.7,1.0,1.2,1.3,1.3,1.3,1.2,1.1,1.1,1.1,1.2,1.3,1.4,1.4,1.4,1.2,1.0,0.7,0.5],
+        "weekly_pattern":[1.0,1.0,1.1,1.1,1.1,1.2,1.2],
+        "seasonal_pattern":[0.8,0.8,0.9,1.0,1.1,1.3,1.3,1.4,1.4,1.1,0.9,0.8],
+        "holiday_list":[{"month":1,"day":1},{"month":12,"day":25}],
+        "holiday_factor":1.5
+      },
+      "budget":90.0,
+      "money":200.0,
+      "buildings":[
+        {"base_supply":10,"x":200,"y":200,"building_type":"producer"},
+        {"base_supply":10,"x":150,"y":400,"building_type":"producer"},
+        {"base_supply":-6,"x":300,"y":300,"building_type":"consumer"},
+        {"base_supply":-8,"x":500,"y":250,"building_type":"consumer"},
+        {"base_supply":-12,"x":700,"y":400,"building_type":"consumer"},
+        {"base_supply":5,"x":380,"y":200,"building_type":"prosumer"},
+        {"base_supply":0,"x":450,"y":420,"building_type":"neutral"},
+        {"base_supply":-4,"x":350,"y":500,"building_type":"consumer"},
+        {"base_supply":10,"x":280,"y":500,"building_type":"producer"},
+        {"base_supply":-5,"x":620,"y":220,"building_type":"consumer"},
+        {"base_supply":4,"x":550,"y":180,"building_type":"prosumer"},
+        {"base_supply":-2,"x":660,"y":320,"building_type":"consumer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":12,"cost":1.5},
+        {"u":1,"v":2,"capacity":5,"cost":1.2},
+        {"u":2,"v":3,"capacity":6,"cost":1.1},
+        {"u":3,"v":4,"capacity":7,"cost":1.3},
+        {"u":0,"v":2,"capacity":4,"cost":1.0},
+        {"u":1,"v":3,"capacity":5,"cost":1.0},
+        {"u":5,"v":6,"capacity":4,"cost":1.1},
+        {"u":2,"v":7,"capacity":5,"cost":1.2},
+        {"u":4,"v":9,"capacity":6,"cost":1.3},
+        {"u":6,"v":7,"capacity":4,"cost":1.0},
+        {"u":1,"v":8,"capacity":5,"cost":1.4},
+        {"u":10,"v":11,"capacity":4,"cost":1.3}
+      ]
+    },
+
+    {
+      "name": "Scenario9",
+      "desc": "냉난방 부하 변동 심함",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern":[0.5,0.4,0.4,0.4,0.5,0.7,1.0,1.1,1.2,1.2,1.1,1.1,1.0,1.0,1.1,1.2,1.3,1.4,1.5,1.5,1.3,1.0,0.8,0.5],
+        "weekly_pattern":[1.0,1.0,1.0,1.2,1.2,1.3,1.3],
+        "seasonal_pattern":[0.8,0.85,0.95,1.0,1.1,1.2,1.4,1.4,1.3,1.1,0.9,0.8],
+        "holiday_list":[{"month":2,"day":14}],
+        "holiday_factor":1.4
+      },
+      "budget":40.0,
+      "money":90.0,
+      "buildings":[
+        {"base_supply":18,"x":250,"y":180,"building_type":"producer"},
+        {"base_supply":-5,"x":350,"y":320,"building_type":"consumer"},
+        {"base_supply":-4,"x":550,"y":280,"building_type":"consumer"},
+        {"base_supply":-7,"x":660,"y":320,"building_type":"consumer"},
+        {"base_supply":0,"x":500,"y":420,"building_type":"neutral"},
+        {"base_supply":5,"x":300,"y":500,"building_type":"prosumer"},
+        {"base_supply":8,"x":220,"y":450,"building_type":"producer"},
+        {"base_supply":-3,"x":420,"y":550,"building_type":"consumer"},
+        {"base_supply":0,"x":530,"y":100,"building_type":"neutral"},
+        {"base_supply":2,"x":600,"y":150,"building_type":"prosumer"},
+        {"base_supply":10,"x":160,"y":520,"building_type":"producer"},
+        {"base_supply":-6,"x":730,"y":400,"building_type":"consumer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":8,"cost":1.0},
+        {"u":1,"v":2,"capacity":4,"cost":1.2},
+        {"u":2,"v":3,"capacity":6,"cost":1.3},
+        {"u":1,"v":4,"capacity":7,"cost":1.1},
+        {"u":0,"v":4,"capacity":9,"cost":1.4},
+        {"u":4,"v":3,"capacity":5,"cost":1.0},
+        {"u":0,"v":5,"capacity":6,"cost":1.2},
+        {"u":5,"v":7,"capacity":3,"cost":1.0},
+        {"u":4,"v":8,"capacity":4,"cost":1.1},
+        {"u":2,"v":9,"capacity":5,"cost":1.3},
+        {"u":5,"v":10,"capacity":5,"cost":1.2},
+        {"u":3,"v":11,"capacity":6,"cost":1.4}
+      ]
+    },
+
+    {
+      "name": "Scenario10",
+      "desc": "거대 발전소, 대형 도시",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern":[0.4,0.3,0.3,0.3,0.4,0.5,0.8,1.0,1.2,1.3,1.3,1.2,1.1,1.1,1.1,1.2,1.3,1.5,1.5,1.4,1.2,1.0,0.7,0.5],
+        "weekly_pattern":[1.0,1.0,1.1,1.1,1.2,1.2,1.3],
+        "seasonal_pattern":[0.8,0.85,0.9,0.95,1.0,1.2,1.3,1.4,1.3,1.1,0.9,0.8],
+        "holiday_list":[{"month":4,"day":1},{"month":12,"day":31}],
+        "holiday_factor":1.3
+      },
+      "budget":100.0,
+      "money":250.0,
+      "buildings":[
+        {"base_supply":20,"x":220,"y":100,"building_type":"producer"},
+        {"base_supply":5,"x":150,"y":200,"building_type":"producer"},
+        {"base_supply":0,"x":300,"y":300,"building_type":"neutral"},
+        {"base_supply":-8,"x":450,"y":250,"building_type":"consumer"},
+        {"base_supply":-10,"x":600,"y":400,"building_type":"consumer"},
+        {"base_supply":-5,"x":500,"y":500,"building_type":"consumer"},
+        {"base_supply":15,"x":650,"y":180,"building_type":"producer"},
+        {"base_supply":5,"x":380,"y":180,"building_type":"prosumer"},
+        {"base_supply":-4,"x":320,"y":440,"building_type":"consumer"},
+        {"base_supply":3,"x":700,"y":280,"building_type":"prosumer"},
+        {"base_supply":0,"x":250,"y":500,"building_type":"neutral"},
+        {"base_supply":-6,"x":480,"y":140,"building_type":"consumer"}
+      ],
+      "lines":[
+        {"u":0,"v":1,"capacity":8,"cost":1.0},
+        {"u":1,"v":2,"capacity":5,"cost":1.2},
+        {"u":2,"v":3,"capacity":7,"cost":1.1},
+        {"u":3,"v":4,"capacity":6,"cost":1.3},
+        {"u":4,"v":5,"capacity":5,"cost":1.1},
+        {"u":0,"v":3,"capacity":9,"cost":1.2},
+        {"u":2,"v":5,"capacity":4,"cost":1.0},
+        {"u":4,"v":6,"capacity":12,"cost":2.0},
+        {"u":6,"v":7,"capacity":6,"cost":1.3},
+        {"u":3,"v":8,"capacity":4,"cost":1.1},
+        {"u":6,"v":9,"capacity":5,"cost":1.4},
+        {"u":2,"v":10,"capacity":5,"cost":1.1},
+        {"u":1,"v":11,"capacity":4,"cost":1.2}
+      ]
+    },
+
+    {
+      "name": "Smart Grid City",
+      "desc": "배터리 시스템과 스마트 그리드가 적용된 미래 도시",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.5,0.4,0.3,0.3,0.4,0.6,0.8,1.0,1.1,1.2,1.3,1.2,1.1,1.0,1.0,1.1,1.3,1.5,1.6,1.5,1.3,1.1,0.8,0.6],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.1,1.2,1.3],
+        "seasonal_pattern": [0.8,0.9,0.9,1.0,1.1,1.2,1.4,1.5,1.3,1.1,0.9,0.8],
+        "holiday_list": [
+          {"month":1, "day":1},
+          {"month":5, "day":5},
+          {"month":8, "day":15},
+          {"month":12, "day":25}
+        ],
+        "holiday_factor": 1.4
+      },
+      "budget": 100.0,
+      "money": 200.0,
+      "buildings": [
+        {
+          "base_supply": 25,
+          "x": 150,
+          "y": 120,
+          "building_type": "producer",
+          "solar_capacity": 0,
+          "battery_capacity": 10.0,
+          "battery_charge": 5.0,
+          "smart_grid_connected": true
+        },
+        {
+          "base_supply": 15,
+          "x": 650,
+          "y": 200,
+          "building_type": "producer",
+          "solar_capacity": 0,
+          "battery_capacity": 8.0,
+          "battery_charge": 4.0,
+          "smart_grid_connected": true
+        },
+        {
+          "base_supply": -8,
+          "x": 350,
+          "y": 300,
+          "building_type": "apartment",
+          "solar_capacity": 2.0,
+          "is_prosumer": true,
+          "battery_capacity": 5.0,
+          "battery_charge": 2.5,
+          "smart_grid_connected": true,
+          "energy_efficiency": 0.9,
+          "year_built": 2022
+        },
+        {
+          "base_supply": -12,
+          "x": 500,
+          "y": 350,
+          "building_type": "hospital",
+          "energy_efficiency": 1.2,
+          "year_built": 2010,
+          "battery_capacity": 7.0,
+          "battery_charge": 7.0,
+          "smart_grid_connected": true
+        },
+        {
+          "base_supply": -6,
+          "x": 250,
+          "y": 200,
+          "building_type": "office",
+          "energy_efficiency": 1.0,
+          "year_built": 2015,
+          "solar_capacity": 1.5,
+          "battery_capacity": 3.0,
+          "battery_charge": 1.5,
+          "smart_grid_connected": true
+        },
+        {
+          "base_supply": -4,
+          "x": 400,
+          "y": 150,
+          "building_type": "school",
+          "energy_efficiency": 0.8,
+          "year_built": 2018,
+          "solar_capacity": 3.0,
+          "battery_capacity": 4.0,
+          "battery_charge": 2.0,
+          "smart_grid_connected": true
+        },
+        {
+          "base_supply": -10,
+          "x": 600,
+          "y": 400,
+          "building_type": "shopping_mall",
+          "energy_efficiency": 1.1,
+          "year_built": 2012,
+          "solar_capacity": 0,
+          "battery_capacity": 0,
+          "smart_grid_connected": false
+        },
+        {
+          "base_supply": 10,
+          "x": 200,
+          "y": 400,
+          "building_type": "producer",
+          "solar_capacity": 5.0,
+          "battery_capacity": 0,
+          "smart_grid_connected": false
+        },
+        {
+          "base_supply": -7,
+          "x": 450,
+          "y": 450,
+          "building_type": "apartment",
+          "energy_efficiency": 1.0,
+          "year_built": 2005,
+          "solar_capacity": 0,
+          "battery_capacity": 0,
+          "smart_grid_connected": false
+        },
+        {
+          "base_supply": 0,
+          "x": 300,
+          "y": 350,
+          "building_type": "apartment",
+          "solar_capacity": 8.0,
+          "is_prosumer": true,
+          "battery_capacity": 6.0,
+          "battery_charge": 3.0,
+          "smart_grid_connected": true,
+          "energy_efficiency": 0.8
+        }
+      ],
+      "lines": [
+        {"u":0, "v":1, "capacity": 12.0, "cost": 1.5},
+        {"u":0, "v":2, "capacity": 8.0, "cost": 1.2},
+        {"u":1, "v":3, "capacity": 10.0, "cost": 1.4},
+        {"u":2, "v":4, "capacity": 7.0, "cost": 1.0},
+        {"u":3, "v":5, "capacity": 6.0, "cost": 1.1},
+        {"u":4, "v":5, "capacity": 5.0, "cost": 0.9},
+        {"u":5, "v":6, "capacity": 8.0, "cost": 1.3},
+        {"u":0, "v":7, "capacity": 9.0, "cost": 1.2},
+        {"u":7, "v":8, "capacity": 7.0, "cost": 1.0},
+        {"u":2, "v":9, "capacity": 6.0, "cost": 0.8}
+      ]
+    },
+    
+    {
+      "name": "RenewableEnergy",
+      "desc": "재생에너지 발전소와 그린수소 저장소가 포함된 시나리오",
+      "region": "Seoul",
+      "pattern": {
+        "daily_pattern": [0.6,0.5,0.4,0.4,0.5,0.7,1.0,1.2,1.2,1.2,1.2,1.1,1.0,1.0,1.1,1.2,1.3,1.5,1.5,1.3,1.1,1.0,0.8,0.6],
+        "weekly_pattern": [1.0,1.0,1.0,1.0,1.0,1.1,1.3],
+        "seasonal_pattern": [0.9,0.9,1.0,1.0,1.1,1.2,1.3,1.3,1.4,1.1,0.9,0.8],
+        "holiday_list": [
+          {"month":1, "day":1}
+        ],
+        "holiday_factor": 1.3
+      },
+      "budget": 80.0,
+      "money": 150.0,
+      "buildings": [
+        {"base_supply": 0, "x": 100, "y": 100, "building_type": "wind_plant", "wind_capacity": 50},
+        {"base_supply": 0, "x": 200, "y": 100, "building_type": "solar_plant", "solar_capacity": 40},
+        {"base_supply": 48, "x": 300, "y": 100, "building_type": "hydro_plant", "hydro_capacity": 60},
+        {"base_supply": 0, "x": 400, "y": 100, "building_type": "hydrogen_storage", "hydrogen_storage": 100},
+        {"base_supply": 30, "x": 150, "y": 250, "building_type": "producer"},
+        {"base_supply": -8, "x": 300, "y": 300, "building_type": "apartment", "energy_efficiency": 1.0},
+        {"base_supply": -6, "x": 450, "y": 350, "building_type": "office", "energy_efficiency": 0.9},
+        {"base_supply": -10, "x": 600, "y": 400, "building_type": "shopping_mall", "energy_efficiency": 1.1},
+        {"base_supply": -12, "x": 500, "y": 250, "building_type": "hospital", "energy_efficiency": 1.2},
+        {"base_supply": -4, "x": 350, "y": 450, "building_type": "school", "energy_efficiency": 0.8},
+        {"base_supply": 0, "x": 200, "y": 400, "building_type": "apartment", "solar_capacity": 10, "is_prosumer": true, "battery_capacity": 8, "battery_charge": 4, "smart_grid_connected": true},
+        {"base_supply": -5, "x": 700, "y": 350, "building_type": "apartment", "battery_capacity": 5, "battery_charge": 2.5, "smart_grid_connected": true}
+      ],
+      "lines": [
+        {"u":0, "v":4, "capacity": 15, "cost": 1.2},
+        {"u":1, "v":4, "capacity": 12, "cost": 1.2},
+        {"u":2, "v":4, "capacity": 20, "cost": 1.3},
+        {"u":3, "v":4, "capacity": 15, "cost": 1.1},
+        {"u":4, "v":5, "capacity": 10, "cost": 1.0},
+        {"u":4, "v":6, "capacity": 8, "cost": 1.1},
+        {"u":4, "v":8, "capacity": 15, "cost": 1.2},
+        {"u":5, "v":7, "capacity": 12, "cost": 1.3},
+        {"u":6, "v":7, "capacity": 10, "cost": 1.2},
+        {"u":7, "v":11, "capacity": 8, "cost": 1.1},
+        {"u":8, "v":9, "capacity": 6, "cost": 1.0},
+        {"u":5, "v":10, "capacity": 10, "cost": 1.2},
+        {"u":10, "v":9, "capacity": 7, "cost": 1.1}
+      ]
+    }
+  ]
+}
