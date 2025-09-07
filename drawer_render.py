@@ -374,8 +374,17 @@ class DrawerRenderer:
                     else:
                         draw_arrow(self.screen, sx2, sy2, sx1, sy1, color, thick)
             
-            # 중간 정보 박스 그리기
-            self._draw_line_info(pl, sx1, sy1, sx2, sy2, usage)
+            # 마우스가 송전선 근처에 있을 때만 정보 박스 그리기
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            # 송전선의 중앙점 계산
+            mid_x = (sx1 + sx2) / 2
+            mid_y = (sy1 + sy2) / 2
+            # 마우스와 중앙점 사이의 거리 계산
+            dist_to_mouse = ((mouse_x - mid_x) ** 2 + (mouse_y - mid_y) ** 2) ** 0.5
+            
+            # 마우스가 송전선 근처(50픽셀 이내)에 있을 때만 정보 표시
+            if dist_to_mouse < 50:
+                self._draw_line_info(pl, sx1, sy1, sx2, sy2, usage)
     
     def _draw_line_info(self, pl, sx1, sy1, sx2, sy2, usage):
         """송전선 중앙에 정보 박스 그리기"""

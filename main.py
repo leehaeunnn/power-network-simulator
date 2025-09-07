@@ -13,7 +13,6 @@ from utils import *
 def main():
     # 명령행 인자 파싱
     parser = argparse.ArgumentParser(description='전력 네트워크 시뮬레이터')
-    parser.add_argument('--web', action='store_true', help='웹 인터페이스 사용 (기본: pygame)')
     parser.add_argument('--analyze', action='store_true', help='시뮬레이션 결과 분석')
     parser.add_argument('--scenario', type=str, help='특정 시나리오 이름')
     args = parser.parse_args()
@@ -65,25 +64,14 @@ def main():
     # 초기에 첫 시나리오 불러오기
     sim.load_scenario(scenario_list[0])
     
-    # 웹 모드 또는 pygame 모드 선택
-    if args.web:
-        try:
-            from web_interface.app import create_app, start_server
-            app = create_app(sim)
-            start_server(app)
-        except ImportError:
-            print("[에러] 웹 인터페이스를 위한 패키지가 설치되지 않았습니다.")
-            print("다음 명령어로 필요한 패키지를 설치하세요: pip install flask flask-socketio")
-            sys.exit(1)
-    else:
-        # 기존 Pygame UI 사용
-        # Pygame UI 관련 모듈을 여기서 import
-        from uis import ParticleSystem, Button, ContextMenu
-        from drawer_base import Drawer
-        
-        # Drawer 생성 + 실행
-        drawer = Drawer(sim)
-        drawer.run()
+    # Pygame UI 사용
+    # Pygame UI 관련 모듈을 여기서 import
+    from uis import ParticleSystem, Button, ContextMenu
+    from drawer_base import Drawer
+    
+    # Drawer 생성 + 실행
+    drawer = Drawer(sim)
+    drawer.run()
     
     # 시뮬레이션 결과 분석 (--analyze 옵션이 있는 경우)
     if args.analyze:
