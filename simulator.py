@@ -76,12 +76,33 @@ class Simulator:
             b.solar_capacity = binfo.get("solar_capacity", 0.0)
             b.is_prosumer = binfo.get("is_prosumer", False)
             b.building_type = binfo.get("building_type", "apartment")
+            b.power_plant_type = binfo.get("power_plant_type", None)  # 발전소 타입 추가
             b.heating_source = binfo.get("heating_source", "electric")
             b.heating_type = binfo.get("heating_type", "electric")
             b.heating_cop = binfo.get("heating_cop", 1.0)
             b.humidity_sensitivity = binfo.get("humidity_sensitivity", 1.0)
             b.panel_tilt = binfo.get("panel_tilt", 30)
             b.panel_azimuth = binfo.get("panel_azimuth", 180)
+            
+            # 발전소 타입별 추가 속성 설정
+            if b.power_plant_type == "nuclear":
+                b.capacity_factor = 0.85
+                b.fuel_efficiency = 0.33
+            elif b.power_plant_type == "thermal":
+                b.capacity_factor = 0.7
+                b.fuel_efficiency = 0.42
+            elif b.power_plant_type == "hydro":
+                b.hydro_capacity = b.base_supply
+                b.capacity_factor = 0.4
+            elif b.power_plant_type == "wind":
+                b.wind_capacity = b.base_supply
+                b.capacity_factor = 0.25
+            elif b.power_plant_type == "solar":
+                b.solar_capacity = b.base_supply
+                b.capacity_factor = 0.15
+            elif b.power_plant_type == "hydrogen":
+                b.hydrogen_storage = b.base_supply
+                b.hydrogen_level = b.base_supply * 0.3
         
         # 송전선 재구성
         for linfo in scenario["lines"]:

@@ -16,7 +16,7 @@
       "budget": 40.0,
       "money": 80.0,
       "buildings": [
-        {"base_supply": 60, "x": 200, "y": 150, "building_type": "producer"},
+        {"base_supply": 60, "x": 200, "y": 150, "building_type": "producer", "power_plant_type": "thermal"},
         {"base_supply": -5, "x": 350, "y": 300, "building_type": "consumer"}
       ],
       "lines": [
