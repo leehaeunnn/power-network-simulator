@@ -303,99 +303,109 @@ class CityGraph:
         self.lines.append(pl)
         return pl  # 생성된 PowerLine 객체 반환
     
-    def add_wind_plant(self, capacity=80.0, x=0, y=0):
-        """풍력발전소 추가 - 중용량 간헐적 발전"""
+    def add_wind_plant(self, capacity=100.0, x=0, y=0):  # 100MW급 육상풍력단지
+        """풍력발전소 추가 - 100MW급 육상풍력단지 (제주 풍력단지 규모)"""
         b = Building(self.n, 0)
         b.x, b.y = x, y
-        b.wind_capacity = capacity
-        b.base_supply = capacity * 0.3  # 풍력은 간헐적, 30% 기본 발전
+        b.wind_capacity = capacity  # MW 단위
+        b.base_supply = capacity * 0.25  # 풍력은 간헐적, 25% 기본 발전
         b.power_plant_type = "wind"
         b.building_type = "wind_plant"
-        b.name = f"풍력발전소_{self.n}"
+        b.name = f"풍력발전단지_{self.n}"
         # 풍력 특성 설정
         b.variability = 0.7  # 높은 변동성
-        b.capacity_factor = 0.35  # 35% 설비이용율
+        b.capacity_factor = 0.25  # 한국 평균 25% 설비이용율
+        b.rated_wind_speed = 12.0  # 정격 풍속 (m/s)
+        b.cut_in_speed = 3.0  # 시동 풍속 (m/s)
+        b.cut_out_speed = 25.0  # 정지 풍속 (m/s)
         self.buildings.append(b)
         self.n += 1
         return b
     
-    def add_solar_plant(self, capacity=60.0, x=0, y=0):
-        """태양광발전소 추가 - 중용량 일조 의존 발전"""
+    def add_solar_plant(self, capacity=99.0, x=0, y=0):  # 99MW급 대규모 태양광
+        """태양광발전소 추가 - 99MW급 대규모 태양광 (새만금 육상태양광 규모)"""
         b = Building(self.n, 0)
         b.x, b.y = x, y
-        b.solar_capacity = capacity
-        b.base_supply = capacity * 0.25  # 태양광은 일조 의존, 25% 기본 발전
+        b.solar_capacity = capacity  # MW 단위
+        b.base_supply = capacity * 0.15  # 태양광은 일조 의존, 15% 기본 발전
         b.power_plant_type = "solar"
         b.building_type = "solar_plant"
         b.name = f"태양광발전소_{self.n}"
         # 태양광 특성 설정
-        b.panel_tilt = 35  # 최적 경사각
+        b.panel_tilt = 35  # 한국 최적 경사각
         b.panel_azimuth = 180  # 남향
-        b.capacity_factor = 0.2  # 20% 설비이용율
+        b.capacity_factor = 0.15  # 한국 평균 15% 설비이용율
+        b.panel_efficiency = 0.20  # 패널 효율 20%
+        b.area = capacity * 6000  # 1MW당 약 6000m² 필요
         self.buildings.append(b)
         self.n += 1
         return b
     
-    def add_hydro_plant(self, capacity=100.0, x=0, y=0):
-        """수력발전소 추가 - 중대용량 안정 발전"""
+    def add_hydro_plant(self, capacity=412.0, x=0, y=0):  # 412MW급 대수력
+        """수력발전소 추가 - 412MW급 대수력 (충주댐 규모)"""
         b = Building(self.n, capacity)
         b.x, b.y = x, y
-        b.hydro_capacity = capacity
-        b.base_supply = capacity * 0.9  # 수력은 매우 안정적, 90% 기본 발전
+        b.hydro_capacity = capacity  # MW 단위
+        b.base_supply = capacity * 0.4  # 수력은 안정적이나 갈수기 고려, 40% 기본 발전
         b.power_plant_type = "hydro"
         b.building_type = "hydro_plant"
         b.name = f"수력발전소_{self.n}"
         # 수력 특성 설정
-        b.reservoir_level = 0.8  # 저수지 수위 80%
-        b.capacity_factor = 0.5  # 50% 설비이용율
-        b.seasonal_variation = 0.3  # 계절별 변동 30%
+        b.reservoir_level = 0.7  # 평균 저수율 70%
+        b.capacity_factor = 0.4  # 한국 수력 평균 40% 설비이용율
+        b.seasonal_variation = 0.4  # 계절별 변동 40% (갈수기/홍수기)
+        b.turbine_efficiency = 0.9  # 터빈 효율 90%
         self.buildings.append(b)
         self.n += 1
         return b
     
-    def add_hydrogen_storage(self, storage_capacity=100.0, x=0, y=0):
-        """그린수소 에너지 저장소 추가"""
+    def add_hydrogen_storage(self, storage_capacity=50.0, x=0, y=0):  # 50MW급 수소연료전지
+        """그린수소 에너지 저장소 추가 - 50MW급 수소연료전지발전소"""
         b = Building(self.n, 0)
         b.x, b.y = x, y
-        b.hydrogen_storage = storage_capacity
+        b.hydrogen_storage = storage_capacity  # MW 단위 저장용량
         b.hydrogen_level = storage_capacity * 0.3  # 초기 수소 저장량 30%
         b.power_plant_type = "hydrogen"
         b.building_type = "hydrogen_storage"
         b.base_supply = 1  # 최소 발전량 설정
-        b.name = f"수소저장소_{self.n}"
+        b.name = f"수소연료전지발전소_{self.n}"
+        b.fuel_cell_efficiency = 0.6  # 연료전지 효율 60%
+        b.electrolyzer_efficiency = 0.7  # 수전해 효율 70%
         self.buildings.append(b)
         self.n += 1
         return b
     
-    def add_nuclear_plant(self, capacity=200.0, x=0, y=0):
-        """원자력발전소 추가 - 대용량 안정 발전"""
+    def add_nuclear_plant(self, capacity=1000.0, x=0, y=0):  # 1000MW급 원전
+        """원자력발전소 추가 - 1000MW급 원전 (신고리/신한울 APR1400 규모)"""
         b = Building(self.n, capacity)
         b.x, b.y = x, y
-        b.base_supply = capacity * 0.95  # 원자력은 매우 안정적, 95% 기본 발전
+        b.base_supply = capacity * 0.85  # 원자력은 기저부하, 85% 이용률
         b.power_plant_type = "nuclear"
         b.building_type = "nuclear_plant"
         b.name = f"원자력발전소_{self.n}"
         # 원자력 특성 설정
-        b.fuel_efficiency = 0.98  # 높은 연료 효율
-        b.maintenance_cost = capacity * 0.1  # 높은 유지비용
-        b.reliability = 0.99  # 높은 신뢰도
+        b.fuel_efficiency = 0.33  # 열효율 33%
+        b.capacity_factor = 0.85  # 한국 원전 평균 85% 이용률
+        b.maintenance_days = 30  # 연간 계획예방정비 30일
+        b.reactor_type = "APR1400"  # 한국형 원전
         self.buildings.append(b)
         self.n += 1
         return b
     
-    def add_thermal_plant(self, capacity=150.0, x=0, y=0):
-        """화력발전소 추가 - 중대용량 조정 가능 발전"""
+    def add_thermal_plant(self, capacity=500.0, x=0, y=0):  # 500MW급 석탄화력
+        """화력발전소 추가 - 500MW급 석탄화력 (표준석탄화력 규모)"""
         b = Building(self.n, capacity)
         b.x, b.y = x, y
-        b.base_supply = capacity * 0.85  # 화력은 85% 기본 발전
+        b.base_supply = capacity * 0.7  # 화력은 70% 이용률
         b.power_plant_type = "thermal"
         b.building_type = "thermal_plant"
-        b.name = f"화력발전소_{self.n}"
+        b.name = f"석탄화력발전소_{self.n}"
         # 화력 특성 설정
-        b.fuel_efficiency = 0.75  # 중간 연료 효율
-        b.ramp_rate = 0.8  # 높은 출력 조정 속도
-        b.emission_factor = 0.5  # 탄소 배출 계수
-        b.fuel_cost = capacity * 0.05  # 연료비용
+        b.fuel_efficiency = 0.42  # 초초임계압 열효율 42%
+        b.ramp_rate = 5.0  # 분당 5MW 출력 조정
+        b.emission_factor = 820  # kg CO2/MWh
+        b.fuel_type = "coal"  # 연료 종류
+        b.capacity_factor = 0.7  # 석탄화력 평균 70% 이용률
         self.buildings.append(b)
         self.n += 1
         return b

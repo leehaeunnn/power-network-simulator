@@ -392,8 +392,9 @@ class DrawerRenderer:
         mid_y = (sy1 + sy2) / 2
         info_color = (0, 200, 0) if usage < 0.5 else (200, 200, 0) if usage < 0.8 else (200, 0, 0)
         usage_percent = usage * 100
-        flow_text = f"{abs(pl.flow):.1f}/{pl.capacity:.1f}"
+        flow_text = f"{abs(pl.flow):.1f}/{pl.capacity:.1f} MW"
         usage_text = f"{usage_percent:.0f}%"
+        voltage_text = "345kV" if pl.capacity > 500 else "154kV" if pl.capacity > 200 else "22.9kV"
         if usage > 0.8:
             warning = "⚠" if usage > 0.95 else "!"
             flow_text = warning + " " + flow_text
@@ -409,20 +410,23 @@ class DrawerRenderer:
         
         flow_surf = render_text_with_shadow(flow_text, info_color)
         usage_surf = render_text_with_shadow(usage_text, info_color)
+        voltage_surf = render_text_with_shadow(voltage_text, (150, 150, 255))
         
         # 박스 크기 및 위치 계산
         padding = 4
         margin = 2
-        box_width = max(flow_surf.get_width(), usage_surf.get_width()) + padding * 2
-        box_height = flow_surf.get_height() + usage_surf.get_height() + padding * 2 + margin
+        box_width = max(flow_surf.get_width(), usage_surf.get_width(), voltage_surf.get_width()) + padding * 2
+        box_height = flow_surf.get_height() + usage_surf.get_height() + voltage_surf.get_height() + padding * 2 + margin * 2
         box = pygame.Surface((box_width, box_height), pygame.SRCALPHA)
         box.fill((0, 0, 0, 160))
         
         # 텍스트 배치
         flow_x = (box_width - flow_surf.get_width()) / 2
         usage_x = (box_width - usage_surf.get_width()) / 2
+        voltage_x = (box_width - voltage_surf.get_width()) / 2
         box.blit(flow_surf, (flow_x, padding))
         box.blit(usage_surf, (usage_x, padding + flow_surf.get_height() + margin))
+        box.blit(voltage_surf, (voltage_x, padding + flow_surf.get_height() + usage_surf.get_height() + margin * 2))
         
         # 박스 위치 조정 (화면 경계 넘지 않도록)
         box_x = mid_x - box_width / 2
@@ -870,8 +874,8 @@ class DrawerRenderer:
             base_demand = abs(b.base_supply) # 초기 설정된 기본 수요량
             current_demand = -b.current_supply if b.current_supply < 0 else 0 # 현재 실제 수요량
 
-            status_lines.append(f"기본수요: {base_demand:.1f}") # "평균수요" -> "기본수요"로 레이블 변경
-            status_lines.append(f"현재수요: {current_demand:.1f}") # 실시간 현재 수요 표시
+            status_lines.append(f"기본수요: {base_demand:.1f} MW") # "평균수요" -> "기본수요"로 레이블 변경
+            status_lines.append(f"현재수요: {current_demand:.1f} MW") # 실시간 현재 수요 표시
 
             # 태양광 설비 정보 (있으면 표시)
             if b.solar_capacity > 0:
@@ -895,13 +899,16 @@ class DrawerRenderer:
 
         # 생산자 정보 처리 (b.base_supply > 0)
         elif b.base_supply > 0:
-            status_lines.append(f"발전: {b.base_supply:.1f}")
+            status_lines.append(f"설비용량: {b.base_supply:.1f} MW")
             if hasattr(b, 'current_supply') and abs(b.current_supply - b.base_supply) > 1e-9 :
-                status_lines.append(f"현재출력: {b.current_supply:.1f}")
+                status_lines.append(f"현재출력: {b.current_supply:.1f} MW")
 
             # 송전량 정보: 오직 b.transmitted_power 값만 사용!
             if hasattr(b, 'transmitted_power'):
-                 status_lines.append(f"송전량: {b.transmitted_power:.1f}")
+                 status_lines.append(f"송전량: {b.transmitted_power:.1f} MW")
+                 if b.base_supply > 0:
+                     utilization = (b.transmitted_power / b.base_supply) * 100
+                     status_lines.append(f"이용률: {utilization:.1f}%")
             else:
                  status_lines.append(f"송전량: N/A")
 
@@ -909,12 +916,12 @@ class DrawerRenderer:
         else: # base_supply == 0
             status_lines.append(f"타입: {b.get_type_str()}")
             if b.solar_capacity > 0:
-                status_lines.append(f"태양광: {b.solar_capacity:.1f}")
+                status_lines.append(f"태양광: {b.solar_capacity:.1f} MW")
             if hasattr(b, 'current_supply') and abs(b.current_supply) > 1e-9:
-                 status_lines.append(f"현재출력: {b.current_supply:.1f}")
+                 status_lines.append(f"현재출력: {b.current_supply:.1f} MW")
             if hasattr(b, 'transmitted_power'):
                  # 중립 건물 등도 송전 가능성이 있으므로 표시
-                 status_lines.append(f"송전량: {b.transmitted_power:.1f}")
+                 status_lines.append(f"송전량: {b.transmitted_power:.1f} MW")
 
         # 배터리 정보
         if hasattr(b, 'battery_capacity') and b.battery_capacity > 0:
@@ -1601,8 +1608,8 @@ class DrawerRenderer:
                     base_demand = abs(b.base_supply)  # 초기 설정된 기본 수요량
                     current_demand = -b.current_supply if b.current_supply < 0 else 0  # 현재 실제 수요량
                     
-                    lines.append((f"  기본수요: {base_demand:.1f}", (200, 255, 200)))
-                    lines.append((f"  현재수요: {current_demand:.1f}", (200, 255, 200)))
+                    lines.append((f"  기본수요: {base_demand:.1f} MW", (200, 255, 200)))
+                    lines.append((f"  현재수요: {current_demand:.1f} MW", (200, 255, 200)))
                     
                     # 태양광 설비 정보 (있으면 표시)
                     if b.solar_capacity > 0:
@@ -1617,20 +1624,23 @@ class DrawerRenderer:
                 
                 # 생산자 정보 처리 (b.base_supply > 0)
                 elif b.base_supply > 0:
-                    lines.append((f"  발전: {b.base_supply:.1f}", (200, 255, 200)))
+                    lines.append((f"  설비용량: {b.base_supply:.1f} MW", (200, 255, 200)))
                     if hasattr(b, 'current_supply') and abs(b.current_supply - b.base_supply) > 1e-9:
-                        lines.append((f"  현재출력: {b.current_supply:.1f}", (200, 255, 200)))
+                        lines.append((f"  현재출력: {b.current_supply:.1f} MW", (200, 255, 200)))
                     
                     if hasattr(b, 'transmitted_power'):
-                        lines.append((f"  송전량: {b.transmitted_power:.1f}", (200, 255, 200)))
+                        lines.append((f"  송전량: {b.transmitted_power:.1f} MW", (200, 255, 200)))
+                        if b.base_supply > 0:
+                            utilization = (b.transmitted_power / b.base_supply) * 100
+                            lines.append((f"  이용률: {utilization:.1f}%", (150, 200, 255)))
                 
                 # 중립 건물 등 나머지 경우
                 else:  # base_supply == 0
                     lines.append((f"  타입: {b.get_type_str()}", (200, 200, 200)))
                     if b.solar_capacity > 0:
-                        lines.append((f"  태양광: {b.solar_capacity:.1f}", (255, 255, 150)))
+                        lines.append((f"  태양광: {b.solar_capacity:.1f} MW", (255, 255, 150)))
                     if hasattr(b, 'current_supply') and abs(b.current_supply) > 1e-9:
-                        lines.append((f"  현재출력: {b.current_supply:.1f}", (200, 255, 200)))
+                        lines.append((f"  현재출력: {b.current_supply:.1f} MW", (200, 255, 200)))
                 
                 # 배터리 정보
                 if hasattr(b, 'battery_capacity') and b.battery_capacity > 0:
