@@ -1655,6 +1655,43 @@ class DrawerRenderer:
                     if hasattr(b, 'current_supply') and abs(b.current_supply - b.base_supply) > 1e-9:
                         lines.append((f"  현재출력: {b.current_supply:.1f} MW", (200, 255, 200)))
                     
+                    # 발전소 타입별 추가 정보
+                    if hasattr(b, 'power_plant_type'):
+                        if b.power_plant_type == "wind":
+                            if hasattr(b, 'wind_capacity'):
+                                lines.append((f"  풍력설비: {b.wind_capacity:.1f} MW", (150, 255, 255)))
+                            lines.append(("  발전방식: 풍력터빈", (150, 200, 200)))
+                            if hasattr(b, 'capacity_factor'):
+                                lines.append((f"  설비이용률: {b.capacity_factor*100:.0f}%", (150, 200, 255)))
+                        elif b.power_plant_type == "solar":
+                            if hasattr(b, 'solar_capacity'):
+                                lines.append((f"  태양광설비: {b.solar_capacity:.1f} MW", (255, 255, 150)))
+                            lines.append(("  발전방식: 태양광패널", (200, 200, 150)))
+                            if hasattr(b, 'capacity_factor'):
+                                lines.append((f"  설비이용률: {b.capacity_factor*100:.0f}%", (150, 200, 255)))
+                        elif b.power_plant_type == "hydro":
+                            if hasattr(b, 'hydro_capacity'):
+                                lines.append((f"  수력설비: {b.hydro_capacity:.1f} MW", (150, 200, 255)))
+                            lines.append(("  발전방식: 수력터빈", (150, 200, 200)))
+                            if hasattr(b, 'capacity_factor'):
+                                lines.append((f"  설비이용률: {b.capacity_factor*100:.0f}%", (150, 200, 255)))
+                        elif b.power_plant_type == "nuclear":
+                            lines.append(("  발전방식: 원자로(APR1400)", (255, 200, 200)))
+                            if hasattr(b, 'capacity_factor'):
+                                lines.append((f"  설비이용률: {b.capacity_factor*100:.0f}%", (150, 200, 255)))
+                            if hasattr(b, 'fuel_efficiency'):
+                                lines.append((f"  열효율: {b.fuel_efficiency*100:.0f}%", (200, 255, 150)))
+                        elif b.power_plant_type == "thermal":
+                            lines.append(("  발전방식: 석탄화력", (200, 150, 150)))
+                            if hasattr(b, 'capacity_factor'):
+                                lines.append((f"  설비이용률: {b.capacity_factor*100:.0f}%", (150, 200, 255)))
+                            if hasattr(b, 'fuel_efficiency'):
+                                lines.append((f"  열효율: {b.fuel_efficiency*100:.0f}%", (200, 255, 150)))
+                        elif b.power_plant_type == "hydrogen":
+                            lines.append(("  발전방식: 수소연료전지", (200, 150, 255)))
+                            if hasattr(b, 'hydrogen_level'):
+                                lines.append((f"  수소저장: {b.hydrogen_level:.1f} MW", (150, 200, 255)))
+                    
                     if hasattr(b, 'transmitted_power'):
                         lines.append((f"  송전량: {b.transmitted_power:.1f} MW", (200, 255, 200)))
                         if b.base_supply > 0:
