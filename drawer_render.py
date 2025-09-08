@@ -903,6 +903,33 @@ class DrawerRenderer:
             if hasattr(b, 'current_supply') and abs(b.current_supply - b.base_supply) > 1e-9 :
                 status_lines.append(f"현재출력: {b.current_supply:.1f} MW")
 
+            # 발전소 타입별 추가 정보
+            if hasattr(b, 'power_plant_type'):
+                if b.power_plant_type == "wind":
+                    if hasattr(b, 'wind_capacity'):
+                        status_lines.append(f"풍력설비: {b.wind_capacity:.1f} MW")
+                    status_lines.append(f"발전방식: 풍력터빈")
+                elif b.power_plant_type == "solar":
+                    if hasattr(b, 'solar_capacity'):
+                        status_lines.append(f"태양광설비: {b.solar_capacity:.1f} MW")
+                    status_lines.append(f"발전방식: 태양광패널")
+                elif b.power_plant_type == "hydro":
+                    if hasattr(b, 'hydro_capacity'):
+                        status_lines.append(f"수력설비: {b.hydro_capacity:.1f} MW")
+                    status_lines.append(f"발전방식: 수력터빈")
+                elif b.power_plant_type == "nuclear":
+                    status_lines.append(f"발전방식: 원자로(APR1400)")
+                    if hasattr(b, 'capacity_factor'):
+                        status_lines.append(f"설비이용률: {b.capacity_factor*100:.0f}%")
+                elif b.power_plant_type == "thermal":
+                    status_lines.append(f"발전방식: 석탄화력")
+                    if hasattr(b, 'fuel_efficiency'):
+                        status_lines.append(f"열효율: {b.fuel_efficiency*100:.0f}%")
+                elif b.power_plant_type == "hydrogen":
+                    status_lines.append(f"발전방식: 수소연료전지")
+                    if hasattr(b, 'hydrogen_level'):
+                        status_lines.append(f"수소저장: {b.hydrogen_level:.1f} MW")
+
             # 송전량 정보: 오직 b.transmitted_power 값만 사용!
             if hasattr(b, 'transmitted_power'):
                  status_lines.append(f"송전량: {b.transmitted_power:.1f} MW")
