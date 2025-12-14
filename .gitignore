@@ -124,3 +124,9 @@ desktop.ini
 *.backup
 scenarios_backup/
 logs/
+.claude/
+.serena/
+node_modules/
+__pycache__/
+.DS_Store
+.env
